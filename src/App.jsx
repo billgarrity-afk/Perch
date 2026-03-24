@@ -317,7 +317,7 @@ export default function Perch() {
     setScreen("chat");
     setLoading(true);
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { 
   "Content-Type": "application/json",
@@ -350,7 +350,7 @@ export default function Perch() {
     setInput("");
     setLoading(true);
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/chat", {
         method: "POST",
        headers: { 
   "Content-Type": "application/json",
