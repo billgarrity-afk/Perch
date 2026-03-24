@@ -1,14 +1,5 @@
 {
   "rewrites": [
-    { "source": "/api/chat", "destination": "https://api.anthropic.com/v1/messages" }
-  ],
-  "headers": [
-    {
-      "source": "/api/chat",
-      "headers": [
-        { "key": "x-api-key", "value": "process.env.VITE_ANTHROPIC_API_KEY" },
-        { "key": "anthropic-version", "value": "2023-06-01" }
-      ]
-    }
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
