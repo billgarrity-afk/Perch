@@ -46,20 +46,23 @@ EASTERN CORRIDOR (Affordable & Up-and-Coming):
 CONVERSATION FLOW:
 1. Greet them warmly and ask what brings them to the Triangle (job, family, lifestyle change, remote work?)
 2. Naturally gather through conversation: budget (rent or buy), who's moving (solo/partner/kids/roommates), where they'll be working or spending most time, lifestyle priorities
-3. Once you have enough context (usually 3-4 exchanges), recommend TOP 3 places
-4. After giving recommendations, naturally transition to asking if they'd like personalized help — say something like: "I can connect you with local specialists who know these communities inside and out — apartments, properties, and homes that actually match what you're looking for. Want me to set that up for you?" This is your signal to the app to show the lead capture form.
-5. IMPORTANT: When you are ready to offer to connect them with local specialists, end your message with the exact token: [SHOW_LEAD_FORM]
+3. Once you have enough context (usually 3-4 exchanges), recommend TOP 3 places that fit them best
+4. IMPORTANT: Format neighborhood names as plain text — do NOT use asterisks or markdown formatting like **bold**. Just write the neighborhood name naturally in the sentence.
+5. After giving recommendations, ask at least 1-2 follow up questions like "Want me to go deeper on any of these?" or "Do you have any questions about the commute or schools?" — have a real back and forth before offering the specialist connection
+6. Only after the user has engaged with the recommendations and asked follow up questions, THEN naturally say something like "I can connect you with local specialists who know these communities inside and out — want me to set that up?" and end with [SHOW_LEAD_FORM]
+7. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations — always have at least one more exchange first
 
 IMPORTANT RULES:
 - Be conversational — gather info through natural dialogue, not a checklist
 - Always be specific to the Triangle — never give generic advice
 - Give honest opinions
-- Reference real landmarks, employers, roads (I-40, 540, 64, 1), and local spots
+- NEVER use asterisks or markdown bold/italic formatting in your responses — plain conversational text only
+- Reference real landmarks, employers, roads (I-40, 540, 64, US-1), and local spots
 - When someone mentions a tight budget, proactively mention eastern corridor and Fuquay-Varina/Garner
 - When someone mentions kids/schools, always consider Wake Forest, Cary, Apex, Holly Springs
 - When someone mentions remote work, open up the full map including Clayton, Wendell, Zebulon
-- Keep responses concise and warm
-- Only show [SHOW_LEAD_FORM] after you have given neighborhood recommendations, not before`;
+- Keep responses concise and warm — you're texting a brilliant local friend, not writing a report
+- Only show [SHOW_LEAD_FORM] after recommendations AND at least one follow-up exchange`;
 
 const C = {
   cream: "#F7F2E8", creamMid: "#EEE8D8", creamDark: "#E4DCCA",
@@ -68,7 +71,8 @@ const C = {
   terra: "#B85C38", terraLight: "rgba(184,92,56,0.1)",
   sand: "#D8CCAA", sandLight: "rgba(216,204,170,0.3)",
   textDark: "#252018", textMid: "#4E4838", textLight: "#8A7E6A",
-  white: "#FDFAF2", positive: "#4E7050",
+  white: "#FDFAF2",
+  gold: "#C8963E",
 };
 
 const serif = "Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif";
@@ -80,6 +84,37 @@ const MARKETS = [
   "Fuquay-Varina", "Garner", "Knightdale", "Clayton",
   "Morrisville", "Wendell", "Zebulon"
 ];
+
+// Bird SVG logo — a simple elegant perched bird
+function BirdLogo({ size = 32, color = "#C8963E" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Body */}
+      <ellipse cx="52" cy="52" rx="22" ry="16" fill={color} transform="rotate(-15 52 52)" />
+      {/* Head */}
+      <circle cx="72" cy="36" r="13" fill={color} />
+      {/* Beak */}
+      <polygon points="83,34 95,38 83,42" fill="#8B6914" />
+      {/* Eye */}
+      <circle cx="76" cy="34" r="3" fill="#1a1a1a" />
+      <circle cx="77" cy="33" r="1" fill="white" />
+      {/* Tail */}
+      <polygon points="30,55 10,45 12,60 10,72 32,62" fill={color} />
+      {/* Wing detail */}
+      <ellipse cx="50" cy="54" rx="14" ry="7" fill="#A67830" transform="rotate(-15 50 54)" opacity="0.5" />
+      {/* Legs */}
+      <line x1="50" y1="67" x2="44" y2="80" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="56" y1="68" x2="50" y2="80" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
+      {/* Feet */}
+      <line x1="44" y1="80" x2="38" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+      <line x1="44" y1="80" x2="44" y2="86" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+      <line x1="44" y1="80" x2="50" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+      <line x1="50" y1="80" x2="44" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+      <line x1="50" y1="80" x2="50" y2="86" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+      <line x1="50" y1="80" x2="56" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 function TypingIndicator() {
   return (
@@ -94,12 +129,13 @@ function TypingIndicator() {
 
 function Message({ msg }) {
   const isUser = msg.role === "user";
-  // Strip the lead form token from display
   const content = msg.content.replace("[SHOW_LEAD_FORM]", "").trim();
   return (
     <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 16, alignItems: "flex-end", gap: 8 }}>
       {!isUser && (
-        <div style={{ width: 32, height: 32, background: C.sageDark, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0, marginBottom: 2 }}>🌿</div>
+        <div style={{ width: 32, height: 32, background: C.gold, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginBottom: 2 }}>
+          <BirdLogo size={22} color="white" />
+        </div>
       )}
       <div style={{
         maxWidth: "75%", background: isUser ? C.sageDark : C.white,
@@ -137,9 +173,9 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
   };
 
   if (submitted) return (
-    <div style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "28px 28px", borderRadius: 2, marginBottom: 16, maxWidth: "85%" }}>
-      <div style={{ fontSize: 24, marginBottom: 12 }}>🌿</div>
-      <div style={{ fontFamily: serif, fontSize: 18, color: C.sageDark, marginBottom: 8, fontWeight: 400 }}>You're all set!</div>
+    <div style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "28px", marginBottom: 16, maxWidth: "85%" }}>
+      <div style={{ marginBottom: 12 }}><BirdLogo size={36} color={C.gold} /></div>
+      <div style={{ fontFamily: serif, fontSize: 18, color: C.sageDark, marginBottom: 8 }}>You're all set!</div>
       <p style={{ fontFamily: serif, fontSize: 14, color: C.textMid, lineHeight: 1.6, margin: 0 }}>
         A local specialist who knows {conversationSummary.topMatch || "the Triangle"} will be in touch within 24 hours. They'll have your full Perch profile so you won't have to repeat yourself.
       </p>
@@ -150,34 +186,20 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
     width: "100%", background: C.cream,
     border: `1.5px solid ${err ? C.terra : C.creamDark}`,
     color: C.textDark, padding: "11px 14px", fontSize: 14,
-    fontFamily: serif, outline: "none", boxSizing: "border-box",
-    borderRadius: 2,
+    fontFamily: serif, outline: "none", boxSizing: "border-box", borderRadius: 2,
   });
 
-  const labelStyle = {
-    fontFamily: sans, fontSize: 10, letterSpacing: "0.2em",
-    textTransform: "uppercase", color: C.textLight, marginBottom: 5, display: "block"
-  };
-
+  const labelStyle = { fontFamily: sans, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: C.textLight, marginBottom: 5, display: "block" };
   const errorStyle = { fontFamily: sans, fontSize: 11, color: C.terra, marginTop: 4 };
 
   return (
-    <div style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "24px 24px 20px", marginBottom: 16, maxWidth: "90%", boxShadow: `0 4px 24px rgba(78,112,80,0.1)` }}>
-
-      {/* Header */}
+    <div onClick={e => e.stopPropagation()} style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "24px", marginBottom: 16, maxWidth: "90%", boxShadow: `0 4px 24px rgba(78,112,80,0.1)` }}>
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.terra, marginBottom: 6 }}>
-          Connect with a local specialist
-        </div>
-        <div style={{ fontFamily: serif, fontSize: 17, color: C.textDark, marginBottom: 6 }}>
-          Let's find your perfect place in {conversationSummary.topMatch || "the Triangle"}
-        </div>
-        <div style={{ fontFamily: serif, fontSize: 13, color: C.textMid, lineHeight: 1.5 }}>
-          A specialist with deep knowledge of your matched neighborhoods will reach out within 24 hours — with listings tailored to exactly what you told Perch.
-        </div>
+        <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.terra, marginBottom: 6 }}>Connect with a local specialist</div>
+        <div style={{ fontFamily: serif, fontSize: 17, color: C.textDark, marginBottom: 6 }}>Let's find your perfect place in {conversationSummary.topMatch || "the Triangle"}</div>
+        <div style={{ fontFamily: serif, fontSize: 13, color: C.textMid, lineHeight: 1.5 }}>A specialist with deep knowledge of your matched neighborhoods will reach out within 24 hours — with listings tailored to exactly what you told Perch.</div>
       </div>
 
-      {/* Perch Profile Summary */}
       {conversationSummary.highlights && conversationSummary.highlights.length > 0 && (
         <div style={{ background: C.sagePale, border: `1px solid ${C.sageLight}`, padding: "12px 14px", marginBottom: 18, borderRadius: 2 }}>
           <div style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: C.sageMid, marginBottom: 8 }}>Your Perch Profile</div>
@@ -189,7 +211,6 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
         </div>
       )}
 
-      {/* Form fields */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
         <div>
           <label style={labelStyle}>Full Name *</label>
@@ -234,27 +255,15 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
         </div>
       </div>
 
-      {/* Privacy note */}
       <div style={{ fontFamily: sans, fontSize: 11, color: C.textLight, lineHeight: 1.5, marginBottom: 16, letterSpacing: "0.02em" }}>
         🔒 Your information is only shared with the specialist matched to your neighborhoods. No spam, no mass lists.
       </div>
 
-      {/* Actions */}
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button onClick={handleSubmit} style={{
-          background: C.terra, color: C.white, border: "none",
-          padding: "14px 32px", fontSize: 13, fontFamily: sans,
-          letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer",
-          transition: "background 0.2s", flex: 1,
-        }}>
+        <button onClick={handleSubmit} style={{ background: C.terra, color: C.white, border: "none", padding: "14px 32px", fontSize: 13, fontFamily: sans, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", flex: 1 }}>
           Connect Me with a Specialist →
         </button>
-        <button onClick={onSkip} style={{
-          background: "none", border: "none", color: C.textLight,
-          fontFamily: sans, fontSize: 12, cursor: "pointer",
-          letterSpacing: "0.08em", textTransform: "uppercase", padding: "14px 8px",
-          whiteSpace: "nowrap",
-        }}>
+        <button onClick={onSkip} style={{ background: "none", border: "none", color: C.textLight, fontFamily: sans, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em", textTransform: "uppercase", padding: "14px 8px", whiteSpace: "nowrap" }}>
           Not now
         </button>
       </div>
@@ -262,28 +271,22 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
   );
 }
 
-// Parse conversation to extract a summary for the lead profile
 function extractConversationSummary(messages) {
   const fullText = messages.map(m => m.content).join(" ").toLowerCase();
   const highlights = [];
   let topMatch = "";
 
-  // Extract housing type
   if (fullText.includes("rent") && !fullText.includes("buying")) highlights.push("Looking to rent");
   else if (fullText.includes("buy") || fullText.includes("purchase")) highlights.push("Looking to buy");
-  else if (fullText.includes("rent")) highlights.push("Renting or buying — open to both");
 
-  // Extract household
   if (fullText.includes("kids") || fullText.includes("children") || fullText.includes("school")) highlights.push("Moving with family / children");
   else if (fullText.includes("partner") || fullText.includes("spouse") || fullText.includes("wife") || fullText.includes("husband")) highlights.push("Moving with partner");
   else if (fullText.includes("roommate")) highlights.push("Moving with roommates");
   else if (fullText.includes("just me") || fullText.includes("solo") || fullText.includes("myself")) highlights.push("Moving solo");
 
-  // Extract employer/work hints
   const employers = ["rtp", "cisco", "sas", "red hat", "duke", "unc", "wakemed", "rex", "ibm", "lenovo", "remote"];
   employers.forEach(e => { if (fullText.includes(e)) highlights.push(`Works at / near ${e.toUpperCase()}`); });
 
-  // Extract top recommended neighborhood from assistant messages
   const assistantText = messages.filter(m => m.role === "assistant").map(m => m.content).join(" ");
   const neighborhoods = ["apex", "cary", "wake forest", "downtown raleigh", "north hills", "downtown durham", "chapel hill", "carrboro", "morrisville", "holly springs", "fuquay-varina", "garner", "knightdale", "clayton", "wendell", "zebulon"];
   for (const n of neighborhoods) {
@@ -294,7 +297,6 @@ function extractConversationSummary(messages) {
   }
 
   if (topMatch) highlights.push(`Top Perch match: ${topMatch}`);
-
   return { highlights, topMatch };
 }
 
@@ -305,7 +307,6 @@ export default function Perch() {
   const [loading, setLoading] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
-  const [leads, setLeads] = useState([]); // In production this goes to your backend/CRM
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -319,12 +320,7 @@ export default function Perch() {
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { 
-  "Content-Type": "application/json",
-  "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
-  "anthropic-version": "2023-06-01",
-  "anthropic-dangerous-allow-browser": "true"
-},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
@@ -336,7 +332,7 @@ export default function Perch() {
       const text = data.content.map(i => i.text || "").join("");
       setMessages([{ role: "assistant", content: text }]);
     } catch (e) {
-      setMessages([{ role: "assistant", content: "Hey! Welcome to Perch 🌿 Having a little trouble connecting — try refreshing and we'll get started." }]);
+      setMessages([{ role: "assistant", content: "Hey! Welcome to Perch. Having a little trouble connecting — try refreshing and we'll get started." }]);
     }
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 100);
@@ -352,12 +348,7 @@ export default function Perch() {
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-       headers: { 
-  "Content-Type": "application/json",
-  "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
-  "anthropic-version": "2023-06-01",
-  "anthropic-dangerous-allow-browser": "true"
-},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
@@ -367,12 +358,9 @@ export default function Perch() {
       });
       const data = await response.json();
       const text = data.content.map(i => i.text || "").join("");
-
-      // Check if AI wants to show lead form
       if (text.includes("[SHOW_LEAD_FORM]") && !showLeadForm && !leadSubmitted) {
         setShowLeadForm(true);
       }
-
       setMessages(prev => [...prev, { role: "assistant", content: text }]);
     } catch (e) {
       setMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Try sending that again!" }]);
@@ -386,17 +374,16 @@ export default function Perch() {
   };
 
   const handleLeadSubmit = (leadData) => {
-    // In production: POST to your backend API / CRM / Airtable / email
     console.log("NEW PERCH LEAD:", leadData);
-    setLeads(prev => [...prev, leadData]);
     setLeadSubmitted(true);
     setShowLeadForm(false);
-    // Confirm in chat
     setMessages(prev => [...prev, {
       role: "assistant",
-      content: `You're all set! 🌿 A local specialist who knows ${leadData.topMatch || "the Triangle"} will reach out within 24 hours. They'll already have your full Perch profile so you won't have to repeat yourself.\n\nIn the meantime, feel free to keep asking me anything about any of these neighborhoods — I'm here.`
+      content: `You're all set! A local specialist who knows ${leadData.topMatch || "the Triangle"} will reach out within 24 hours. They'll already have your full Perch profile so you won't have to repeat yourself.\n\nIn the meantime, feel free to keep asking me anything about any of these neighborhoods.`
     }]);
   };
+
+  const conversationSummary = extractConversationSummary(messages);
 
   // LANDING
   if (screen === "landing") return (
@@ -404,7 +391,12 @@ export default function Perch() {
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 60% 50% at 15% 15%, rgba(78,112,80,0.07) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 85%, rgba(184,92,56,0.05) 0%, transparent 70%)` }} />
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 28px", position: "relative", zIndex: 1 }}>
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: 60, paddingBottom: 60 }}>
-          <div style={{ fontSize: 38, marginBottom: 20, opacity: 0.65 }}>🌿</div>
+
+          {/* Bird logo on landing */}
+          <div style={{ marginBottom: 24 }}>
+            <BirdLogo size={56} color={C.gold} />
+          </div>
+
           <h1 style={{ fontSize: "clamp(54px, 10vw, 92px)", fontWeight: 400, lineHeight: 0.98, letterSpacing: "-0.025em", margin: "0", fontFamily: serif, color: C.textDark }}>Find where</h1>
           <h1 style={{ fontSize: "clamp(54px, 10vw, 92px)", fontWeight: 400, lineHeight: 0.98, letterSpacing: "-0.025em", margin: "0 0 28px", fontFamily: serif, color: C.terra, fontStyle: "italic" }}>you land.</h1>
           <div style={{ width: 52, height: 2, background: C.sand, marginBottom: 28 }} />
@@ -414,6 +406,7 @@ export default function Perch() {
           <p style={{ fontSize: 14, color: C.textLight, maxWidth: 400, lineHeight: 1.6, marginBottom: 40, fontFamily: sans, letterSpacing: "0.02em" }}>
             No forms. No filters. Just a chat with someone who knows the Triangle inside and out.
           </p>
+
           <div style={{ marginBottom: 44 }}>
             <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.sageMid, marginBottom: 12 }}>Covering the full Triangle</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
@@ -422,12 +415,14 @@ export default function Perch() {
               ))}
             </div>
           </div>
+
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
             <button onClick={startChat} style={{ background: C.terra, color: C.white, border: "none", padding: "18px 48px", fontSize: 13, fontFamily: sans, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer" }}>
               Start the Conversation →
             </button>
             <span style={{ fontFamily: sans, fontSize: 12, color: C.textLight, letterSpacing: "0.04em" }}>Free · No signup needed</span>
           </div>
+
           <div style={{ display: "flex", gap: 36, marginTop: 56, paddingTop: 32, borderTop: `1px solid ${C.creamDark}` }}>
             {[["15", "Cities & towns"], ["164k+", "Housing units"], ["60 sec", "To your match"]].map(([n, l]) => (
               <div key={l}>
@@ -442,16 +437,16 @@ export default function Perch() {
   );
 
   // CHAT
-  const conversationSummary = extractConversationSummary(messages);
-
   return (
     <div style={{ height: "100vh", background: C.cream, display: "flex", flexDirection: "column", fontFamily: serif, position: "relative" }}>
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, background: `radial-gradient(ellipse 50% 40% at 10% 10%, rgba(78,112,80,0.05) 0%, transparent 60%)` }} />
 
-      {/* Header */}
+      {/* Header with bird logo */}
       <div style={{ background: C.cream, borderBottom: `1px solid ${C.creamDark}`, padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", zIndex: 2, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 36, height: 36, background: C.sageDark, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🌿</div>
+          <div style={{ width: 38, height: 38, background: C.gold, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <BirdLogo size={26} color="white" />
+          </div>
           <div>
             <div style={{ fontFamily: serif, fontSize: 17, fontWeight: 400, color: C.textDark, letterSpacing: "-0.01em" }}>Perch</div>
             <div style={{ fontFamily: sans, fontSize: 10, color: C.sageMid, letterSpacing: "0.15em", textTransform: "uppercase" }}>Triangle Neighborhood Guide</div>
@@ -467,13 +462,8 @@ export default function Perch() {
           {messages.map((msg, i) => (
             <div key={i}>
               <Message msg={msg} />
-              {/* Show lead form after the message that triggers it */}
               {showLeadForm && !leadSubmitted && msg.role === "assistant" && msg.content.includes("[SHOW_LEAD_FORM]") && i === messages.length - 1 && (
-                <LeadForm
-                  conversationSummary={conversationSummary}
-                  onSubmit={handleLeadSubmit}
-                  onSkip={() => setShowLeadForm(false)}
-                />
+                <LeadForm conversationSummary={conversationSummary} onSubmit={handleLeadSubmit} onSkip={() => setShowLeadForm(false)} />
               )}
             </div>
           ))}
