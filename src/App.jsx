@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 
-const SYSTEM_PROMPT = `You are Perch, a warm and deeply knowledgeable neighborhood guide for the entire Raleigh-Durham-Chapel Hill Triangle area of North Carolina — including all the suburban markets that make up the full DMA. You help people relocating to the Triangle find the perfect neighborhood or city based on their lifestyle, budget, commute needs, and priorities.
+// Ruby's photo as the chat avatar
+const RUBY_PHOTO = "https://i.imgur.com/MnryWLW.png";
 
-You know this area like a local who has lived here for years. You know the difference between Fuquay-Varina's small-town charm and Cary's polished suburbs. You know why someone moving from New Jersey might love Wake Forest. You know which eastern corridor towns are underrated steals. You know where the new development is and where it feels established.
+const SYSTEM_PROMPT = `You are Ruby, the friendly and knowledgeable neighborhood guide for the Raleigh-Durham-Chapel Hill Triangle area of North Carolina — including all the suburban markets that make up the full DMA. You are the warm, intelligent face of Perch, powered by ClubOS AI. You help people relocating to the Triangle find the perfect neighborhood or city based on their lifestyle, budget, commute needs, and priorities.
+
+You have the warmth and trustworthiness of a golden retriever — approachable, genuine, and deeply knowledgeable about the Triangle. You never judge. You never rush. You listen carefully and give honest, specific guidance like a trusted local friend.
 
 YOUR MARKET KNOWLEDGE:
 
@@ -34,35 +37,34 @@ CARY / APEX / MORRISVILLE (Southwest Corridor):
 - Fuquay-Varina: Real small-town charm with a genuine historic downtown, more affordable than Holly Springs, growing fast, great for families wanting space. About 30 min to downtown Raleigh.
 
 NORTHERN SUBURBS:
-- Wake Forest: Booming northern suburb, hugely popular with families relocating from the Northeast and Midwest. Excellent schools, newer construction, real downtown with character, WakeMed hospital nearby. About 25 min to downtown Raleigh. One of the fastest-growing towns in NC.
+- Wake Forest: Booming northern suburb, hugely popular with families relocating from the Northeast and Midwest. Excellent schools, newer construction, real downtown with character, WakeMed hospital nearby. About 25 min to downtown Raleigh.
 
 EASTERN CORRIDOR (Affordable & Up-and-Coming):
-- Garner: Underrated and underpriced. South of Raleigh, close-in, great for first-time buyers priced out of Raleigh proper. More established feel than the far suburbs, easy I-40 access. 15 min to downtown Raleigh.
-- Knightdale: Eastern Raleigh suburb, very family-oriented, newer subdivisions, affordable, growing fast. 20 min to downtown, longer commute trade-off rewarded with lower prices and larger lots.
-- Clayton: Johnston County, further out but increasingly popular. Affordable homes, small-town feel, good schools. 30-35 min to Raleigh. Great for buyers who want the most house for their money.
-- Wendell: Small and authentic, east of Raleigh, very affordable, genuine small-town vibe. Wendell Falls is a notable master-planned community here. 25 min to downtown.
-- Zebulon: Most rural of the Triangle suburbs, Johnston County border, very affordable, small-town feel, honest trade-offs on commute (30-40 min) and amenities. Best for buyers who want acreage or maximum value.
+- Garner: Underrated and underpriced. South of Raleigh, close-in, great for first-time buyers priced out of Raleigh proper. Easy I-40 access. 15 min to downtown Raleigh.
+- Knightdale: Eastern Raleigh suburb, very family-oriented, newer subdivisions, affordable, growing fast. 20 min to downtown.
+- Clayton: Johnston County, further out but popular. Affordable homes, small-town feel, good schools. 30-35 min to Raleigh.
+- Wendell: Small and authentic, east of Raleigh, very affordable. Wendell Falls is a notable master-planned community here. 25 min to downtown.
+- Zebulon: Most rural of the Triangle suburbs, very affordable, small-town feel. Best for buyers who want acreage or maximum value. 30-40 min commute.
 
 CONVERSATION FLOW:
-1. Greet them warmly and ask what brings them to the Triangle (job, family, lifestyle change, remote work?)
-2. Naturally gather through conversation: budget (rent or buy), who's moving (solo/partner/kids/roommates), where they'll be working or spending most time, lifestyle priorities
-3. Once you have enough context (usually 3-4 exchanges), recommend TOP 3 places that fit them best
-4. IMPORTANT: Format neighborhood names as plain text — do NOT use asterisks or markdown formatting like **bold**. Just write the neighborhood name naturally in the sentence.
-5. After giving recommendations, ask at least 1-2 follow up questions like "Want me to go deeper on any of these?" or "Do you have any questions about the commute or schools?" — have a real back and forth before offering the specialist connection
-6. Only after the user has engaged with the recommendations and asked follow up questions, THEN naturally say something like "I can connect you with local specialists who know these communities inside and out — want me to set that up?" and end with [SHOW_LEAD_FORM]
+1. Greet them warmly as Ruby and ask what brings them to the Triangle
+2. Naturally gather: budget (rent or buy), who's moving, where they'll work, lifestyle priorities
+3. After 3-4 exchanges recommend TOP 3 neighborhoods with vivid specific descriptions, typical rent AND purchase price ranges, commute context, 3 things to love, and 1 honest tradeoff
+4. IMPORTANT: Write neighborhood names as plain text — never use asterisks or markdown bold formatting like **Wake Forest**. Just write Wake Forest naturally.
+5. After recommendations ask at least 1-2 follow up questions — have a real back and forth before offering to connect them with a specialist
+6. Only after genuine engagement with recommendations, naturally say you can connect them with local specialists and end with [SHOW_LEAD_FORM]
 7. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations — always have at least one more exchange first
 
-IMPORTANT RULES:
-- Be conversational — gather info through natural dialogue, not a checklist
-- Always be specific to the Triangle — never give generic advice
-- Give honest opinions
-- NEVER use asterisks or markdown bold/italic formatting in your responses — plain conversational text only
-- Reference real landmarks, employers, roads (I-40, 540, 64, US-1), and local spots
-- When someone mentions a tight budget, proactively mention eastern corridor and Fuquay-Varina/Garner
-- When someone mentions kids/schools, always consider Wake Forest, Cary, Apex, Holly Springs
-- When someone mentions remote work, open up the full map including Clayton, Wendell, Zebulon
-- Keep responses concise and warm — you're texting a brilliant local friend, not writing a report
-- Only show [SHOW_LEAD_FORM] after recommendations AND at least one follow-up exchange`;
+RUBY'S PERSONALITY RULES:
+- Warm, direct, and genuinely helpful — like a trusted friend who grew up here
+- Never use asterisks or markdown formatting — plain conversational text only
+- Never be generic — always be specific to the Triangle
+- Give honest opinions including honest tradeoffs
+- Reference real landmarks, employers, roads (I-40, 540, 64, US-1)
+- When budget is tight, proactively mention Garner, Knightdale, Fuquay-Varina as underrated values
+- When kids/schools mentioned, always consider Wake Forest, Cary, Apex, Holly Springs
+- When remote work mentioned, open up Clayton, Wendell, Zebulon
+- Sign off warmly — you are Ruby, not a chatbot`;
 
 const C = {
   cream: "#F7F2E8", creamMid: "#EEE8D8", creamDark: "#E4DCCA",
@@ -71,8 +73,7 @@ const C = {
   terra: "#B85C38", terraLight: "rgba(184,92,56,0.1)",
   sand: "#D8CCAA", sandLight: "rgba(216,204,170,0.3)",
   textDark: "#252018", textMid: "#4E4838", textLight: "#8A7E6A",
-  white: "#FDFAF2",
-  gold: "#C8963E",
+  white: "#FDFAF2", gold: "#C8963E",
 };
 
 const serif = "Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif";
@@ -85,34 +86,66 @@ const MARKETS = [
   "Morrisville", "Wendell", "Zebulon"
 ];
 
-// Bird SVG logo — a simple elegant perched bird
-function BirdLogo({ size = 32, color = "#C8963E" }) {
+// Ruby illustrated SVG logo — warm golden retriever face
+function RubyLogo({ size = 40 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Body */}
-      <ellipse cx="52" cy="52" rx="22" ry="16" fill={color} transform="rotate(-15 52 52)" />
-      {/* Head */}
-      <circle cx="72" cy="36" r="13" fill={color} />
-      {/* Beak */}
-      <polygon points="83,34 95,38 83,42" fill="#8B6914" />
-      {/* Eye */}
-      <circle cx="76" cy="34" r="3" fill="#1a1a1a" />
-      <circle cx="77" cy="33" r="1" fill="white" />
-      {/* Tail */}
-      <polygon points="30,55 10,45 12,60 10,72 32,62" fill={color} />
-      {/* Wing detail */}
-      <ellipse cx="50" cy="54" rx="14" ry="7" fill="#A67830" transform="rotate(-15 50 54)" opacity="0.5" />
-      {/* Legs */}
-      <line x1="50" y1="67" x2="44" y2="80" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="56" y1="68" x2="50" y2="80" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
-      {/* Feet */}
-      <line x1="44" y1="80" x2="38" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
-      <line x1="44" y1="80" x2="44" y2="86" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
-      <line x1="44" y1="80" x2="50" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
-      <line x1="50" y1="80" x2="44" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
-      <line x1="50" y1="80" x2="50" y2="86" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
-      <line x1="50" y1="80" x2="56" y2="85" stroke="#8B6914" strokeWidth="2" strokeLinecap="round" />
+    <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      {/* Head base */}
+      <ellipse cx="50" cy="52" rx="34" ry="32" fill="#C8722A" />
+      {/* Forehead lighter */}
+      <ellipse cx="50" cy="38" rx="24" ry="18" fill="#D4863A" />
+      {/* Left ear */}
+      <ellipse cx="20" cy="58" rx="12" ry="20" fill="#A85A1A" transform="rotate(-15 20 58)" />
+      {/* Right ear */}
+      <ellipse cx="80" cy="58" rx="12" ry="20" fill="#A85A1A" transform="rotate(15 80 58)" />
+      {/* Snout */}
+      <ellipse cx="50" cy="65" rx="18" ry="14" fill="#C47830" />
+      {/* Nose */}
+      <ellipse cx="50" cy="60" rx="8" ry="6" fill="#2A1A0A" />
+      {/* Nose highlight */}
+      <ellipse cx="47" cy="58" rx="2" ry="1.5" fill="rgba(255,255,255,0.4)" />
+      {/* Left eye white */}
+      <ellipse cx="36" cy="46" rx="7" ry="6.5" fill="#F5E8D0" />
+      {/* Right eye white */}
+      <ellipse cx="64" cy="46" rx="7" ry="6.5" fill="#F5E8D0" />
+      {/* Left eye */}
+      <ellipse cx="36" cy="46" rx="5" ry="5" fill="#3D1F00" />
+      {/* Right eye */}
+      <ellipse cx="64" cy="46" rx="5" ry="5" fill="#3D1F00" />
+      {/* Left eye shine */}
+      <circle cx="34" cy="44" r="1.5" fill="white" />
+      {/* Right eye shine */}
+      <circle cx="62" cy="44" r="1.5" fill="white" />
+      {/* Mouth */}
+      <path d="M 42 72 Q 50 78 58 72" stroke="#2A1A0A" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* Chin lighter fur */}
+      <ellipse cx="50" cy="76" rx="10" ry="6" fill="#D4A060" opacity="0.6" />
     </svg>
+  );
+}
+
+// Ruby photo avatar for chat
+function RubyAvatar({ size = 32 }) {
+  const [imgError, setImgError] = useState(false);
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: "50%",
+      overflow: "hidden", flexShrink: 0,
+      border: `2px solid ${C.gold}`,
+      background: C.gold,
+      display: "flex", alignItems: "center", justifyContent: "center"
+    }}>
+      {!imgError ? (
+        <img
+          src={RUBY_PHOTO}
+          alt="Ruby"
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <RubyLogo size={size - 4} />
+      )}
+    </div>
   );
 }
 
@@ -132,11 +165,7 @@ function Message({ msg }) {
   const content = msg.content.replace("[SHOW_LEAD_FORM]", "").trim();
   return (
     <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 16, alignItems: "flex-end", gap: 8 }}>
-      {!isUser && (
-        <div style={{ width: 32, height: 32, background: C.gold, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginBottom: 2 }}>
-          <BirdLogo size={22} color="white" />
-        </div>
-      )}
+      {!isUser && <RubyAvatar size={36} />}
       <div style={{
         maxWidth: "75%", background: isUser ? C.sageDark : C.white,
         color: isUser ? C.white : C.textDark, padding: "13px 18px",
@@ -173,11 +202,11 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
   };
 
   if (submitted) return (
-    <div style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "28px", marginBottom: 16, maxWidth: "85%" }}>
-      <div style={{ marginBottom: 12 }}><BirdLogo size={36} color={C.gold} /></div>
-      <div style={{ fontFamily: serif, fontSize: 18, color: C.sageDark, marginBottom: 8 }}>You're all set!</div>
+    <div style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "28px", marginBottom: 16, maxWidth: "85%", borderRadius: 8 }}>
+      <div style={{ marginBottom: 12 }}><RubyLogo size={48} /></div>
+      <div style={{ fontFamily: serif, fontSize: 18, color: C.sageDark, marginBottom: 8 }}>Ruby's got you covered!</div>
       <p style={{ fontFamily: serif, fontSize: 14, color: C.textMid, lineHeight: 1.6, margin: 0 }}>
-        A local specialist who knows {conversationSummary.topMatch || "the Triangle"} will be in touch within 24 hours. They'll have your full Perch profile so you won't have to repeat yourself.
+        A local specialist who knows {conversationSummary.topMatch || "the Triangle"} will be in touch within 24 hours. They'll have your full profile so you won't have to repeat yourself.
       </p>
     </div>
   );
@@ -186,22 +215,28 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
     width: "100%", background: C.cream,
     border: `1.5px solid ${err ? C.terra : C.creamDark}`,
     color: C.textDark, padding: "11px 14px", fontSize: 14,
-    fontFamily: serif, outline: "none", boxSizing: "border-box", borderRadius: 2,
+    fontFamily: serif, outline: "none", boxSizing: "border-box", borderRadius: 4,
   });
 
   const labelStyle = { fontFamily: sans, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: C.textLight, marginBottom: 5, display: "block" };
   const errorStyle = { fontFamily: sans, fontSize: 11, color: C.terra, marginTop: 4 };
 
   return (
-    <div onClick={e => e.stopPropagation()} style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "24px", marginBottom: 16, maxWidth: "90%", boxShadow: `0 4px 24px rgba(78,112,80,0.1)` }}>
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.terra, marginBottom: 6 }}>Connect with a local specialist</div>
-        <div style={{ fontFamily: serif, fontSize: 17, color: C.textDark, marginBottom: 6 }}>Let's find your perfect place in {conversationSummary.topMatch || "the Triangle"}</div>
-        <div style={{ fontFamily: serif, fontSize: 13, color: C.textMid, lineHeight: 1.5 }}>A specialist with deep knowledge of your matched neighborhoods will reach out within 24 hours — with listings tailored to exactly what you told Perch.</div>
+    <div onClick={e => e.stopPropagation()} style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "24px", marginBottom: 16, maxWidth: "90%", boxShadow: `0 4px 24px rgba(78,112,80,0.1)`, borderRadius: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+        <RubyLogo size={44} />
+        <div>
+          <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.terra, marginBottom: 4 }}>Connect with a local specialist</div>
+          <div style={{ fontFamily: serif, fontSize: 16, color: C.textDark }}>Let's find your perfect place in {conversationSummary.topMatch || "the Triangle"}</div>
+        </div>
+      </div>
+
+      <div style={{ fontFamily: serif, fontSize: 13, color: C.textMid, lineHeight: 1.5, marginBottom: 16 }}>
+        Ruby will pass your full profile to a specialist who knows these neighborhoods inside and out — they'll reach out within 24 hours.
       </div>
 
       {conversationSummary.highlights && conversationSummary.highlights.length > 0 && (
-        <div style={{ background: C.sagePale, border: `1px solid ${C.sageLight}`, padding: "12px 14px", marginBottom: 18, borderRadius: 2 }}>
+        <div style={{ background: C.sagePale, border: `1px solid ${C.sageLight}`, padding: "12px 14px", marginBottom: 18, borderRadius: 4 }}>
           <div style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: C.sageMid, marginBottom: 8 }}>Your Perch Profile</div>
           {conversationSummary.highlights.map((h, i) => (
             <div key={i} style={{ display: "flex", gap: 8, fontSize: 13, color: C.textMid, fontFamily: serif, padding: "2px 0", lineHeight: 1.4 }}>
@@ -260,7 +295,7 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
       </div>
 
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button onClick={handleSubmit} style={{ background: C.terra, color: C.white, border: "none", padding: "14px 32px", fontSize: 13, fontFamily: sans, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", flex: 1 }}>
+        <button onClick={handleSubmit} style={{ background: C.terra, color: C.white, border: "none", padding: "14px 32px", fontSize: 13, fontFamily: sans, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", flex: 1, borderRadius: 4 }}>
           Connect Me with a Specialist →
         </button>
         <button onClick={onSkip} style={{ background: "none", border: "none", color: C.textLight, fontFamily: sans, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em", textTransform: "uppercase", padding: "14px 8px", whiteSpace: "nowrap" }}>
@@ -332,7 +367,7 @@ export default function Perch() {
       const text = data.content.map(i => i.text || "").join("");
       setMessages([{ role: "assistant", content: text }]);
     } catch (e) {
-      setMessages([{ role: "assistant", content: "Hey! Welcome to Perch. Having a little trouble connecting — try refreshing and we'll get started." }]);
+      setMessages([{ role: "assistant", content: "Hey there! I'm Ruby, your Triangle neighborhood guide. I'm having a little trouble connecting right now — try refreshing and we'll get started finding your perfect spot!" }]);
     }
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 100);
@@ -379,7 +414,7 @@ export default function Perch() {
     setShowLeadForm(false);
     setMessages(prev => [...prev, {
       role: "assistant",
-      content: `You're all set! A local specialist who knows ${leadData.topMatch || "the Triangle"} will reach out within 24 hours. They'll already have your full Perch profile so you won't have to repeat yourself.\n\nIn the meantime, feel free to keep asking me anything about any of these neighborhoods.`
+      content: `You're all set! I've passed your full profile to a local specialist who knows ${leadData.topMatch || "the Triangle"} really well. They'll reach out within 24 hours.\n\nIn the meantime I'm still here if you have any more questions about any of these neighborhoods!`
     }]);
   };
 
@@ -392,19 +427,26 @@ export default function Perch() {
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 28px", position: "relative", zIndex: 1 }}>
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: 60, paddingBottom: 60 }}>
 
-          {/* Bird logo on landing */}
-          <div style={{ marginBottom: 24 }}>
-            <BirdLogo size={56} color={C.gold} />
+          {/* Ruby illustrated logo on landing */}
+          <div style={{ marginBottom: 20 }}>
+            <RubyLogo size={72} />
+          </div>
+
+          {/* ClubOS AI badge */}
+          <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: C.gold, marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ width: 24, height: 1.5, background: C.gold, display: "inline-block" }} />
+            A ClubOS AI Experience
           </div>
 
           <h1 style={{ fontSize: "clamp(54px, 10vw, 92px)", fontWeight: 400, lineHeight: 0.98, letterSpacing: "-0.025em", margin: "0", fontFamily: serif, color: C.textDark }}>Find where</h1>
           <h1 style={{ fontSize: "clamp(54px, 10vw, 92px)", fontWeight: 400, lineHeight: 0.98, letterSpacing: "-0.025em", margin: "0 0 28px", fontFamily: serif, color: C.terra, fontStyle: "italic" }}>you land.</h1>
           <div style={{ width: 52, height: 2, background: C.sand, marginBottom: 28 }} />
-          <p style={{ fontSize: 18, color: C.textMid, maxWidth: 460, lineHeight: 1.72, marginBottom: 16, fontFamily: serif }}>
-            Tell Perch where you're coming from, what you do, and how you like to live — and get matched to the right Triangle neighborhood in a real conversation.
+
+          <p style={{ fontSize: 18, color: C.textMid, maxWidth: 460, lineHeight: 1.72, marginBottom: 12, fontFamily: serif }}>
+            Meet Ruby — your personal Triangle neighborhood guide. Tell her where you're coming from, what you do, and how you like to live. She'll find your perfect match.
           </p>
           <p style={{ fontSize: 14, color: C.textLight, maxWidth: 400, lineHeight: 1.6, marginBottom: 40, fontFamily: sans, letterSpacing: "0.02em" }}>
-            No forms. No filters. Just a chat with someone who knows the Triangle inside and out.
+            No forms. No filters. Just a real conversation with someone who knows the Triangle.
           </p>
 
           <div style={{ marginBottom: 44 }}>
@@ -417,8 +459,8 @@ export default function Perch() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
-            <button onClick={startChat} style={{ background: C.terra, color: C.white, border: "none", padding: "18px 48px", fontSize: 13, fontFamily: sans, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer" }}>
-              Start the Conversation →
+            <button onClick={startChat} style={{ background: C.terra, color: C.white, border: "none", padding: "18px 48px", fontSize: 13, fontFamily: sans, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", borderRadius: 4 }}>
+              Chat with Ruby →
             </button>
             <span style={{ fontFamily: sans, fontSize: 12, color: C.textLight, letterSpacing: "0.04em" }}>Free · No signup needed</span>
           </div>
@@ -431,6 +473,11 @@ export default function Perch() {
               </div>
             ))}
           </div>
+
+          {/* ClubOS AI footer */}
+          <div style={{ marginTop: 48, fontFamily: sans, fontSize: 10, color: C.textLight, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+            Powered by ClubOS AI · perchtriangle.com
+          </div>
         </div>
       </div>
     </div>
@@ -441,18 +488,19 @@ export default function Perch() {
     <div style={{ height: "100vh", background: C.cream, display: "flex", flexDirection: "column", fontFamily: serif, position: "relative" }}>
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, background: `radial-gradient(ellipse 50% 40% at 10% 10%, rgba(78,112,80,0.05) 0%, transparent 60%)` }} />
 
-      {/* Header with bird logo */}
-      <div style={{ background: C.cream, borderBottom: `1px solid ${C.creamDark}`, padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", zIndex: 2, flexShrink: 0 }}>
+      {/* Header with Ruby */}
+      <div style={{ background: C.cream, borderBottom: `1px solid ${C.creamDark}`, padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", zIndex: 2, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 38, height: 38, background: C.gold, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <BirdLogo size={26} color="white" />
-          </div>
+          <RubyAvatar size={42} />
           <div>
-            <div style={{ fontFamily: serif, fontSize: 17, fontWeight: 400, color: C.textDark, letterSpacing: "-0.01em" }}>Perch</div>
-            <div style={{ fontFamily: sans, fontSize: 10, color: C.sageMid, letterSpacing: "0.15em", textTransform: "uppercase" }}>Triangle Neighborhood Guide</div>
+            <div style={{ fontFamily: serif, fontSize: 17, fontWeight: 400, color: C.textDark, letterSpacing: "-0.01em" }}>Ruby</div>
+            <div style={{ fontFamily: sans, fontSize: 10, color: C.sageMid, letterSpacing: "0.15em", textTransform: "uppercase" }}>Perch · Triangle Neighborhood Guide</div>
           </div>
         </div>
-        <button onClick={() => { setScreen("landing"); setMessages([]); setShowLeadForm(false); setLeadSubmitted(false); }} style={{ background: "none", border: `1px solid ${C.creamDark}`, color: C.textLight, fontFamily: sans, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", padding: "7px 16px" }}>← Home</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ fontFamily: sans, fontSize: 9, color: C.gold, letterSpacing: "0.2em", textTransform: "uppercase" }}>ClubOS AI</div>
+          <button onClick={() => { setScreen("landing"); setMessages([]); setShowLeadForm(false); setLeadSubmitted(false); }} style={{ background: "none", border: `1px solid ${C.creamDark}`, color: C.textLight, fontFamily: sans, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", padding: "7px 16px", borderRadius: 4 }}>← Home</button>
+        </div>
       </div>
 
       {/* Messages */}
@@ -480,12 +528,12 @@ export default function Perch() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Tell me about yourself — where you're coming from, what you do, how you like to live..."
+            placeholder="Tell Ruby about yourself — where you're coming from, what you do, how you like to live..."
             rows={1}
-            style={{ flex: 1, background: C.cream, border: `1.5px solid ${C.creamDark}`, color: C.textDark, padding: "13px 16px", fontSize: 15, fontFamily: serif, resize: "none", outline: "none", lineHeight: 1.5, maxHeight: 120, overflowY: "auto", borderRadius: 2 }}
+            style={{ flex: 1, background: C.cream, border: `1.5px solid ${C.creamDark}`, color: C.textDark, padding: "13px 16px", fontSize: 15, fontFamily: serif, resize: "none", outline: "none", lineHeight: 1.5, maxHeight: 120, overflowY: "auto", borderRadius: 4 }}
             onInput={e => { e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px"; }}
           />
-          <button onClick={sendMessage} disabled={!input.trim() || loading} style={{ background: input.trim() && !loading ? C.terra : C.sand, color: input.trim() && !loading ? C.white : C.textLight, border: "none", padding: "13px 22px", fontSize: 20, cursor: input.trim() && !loading ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, borderRadius: 2 }}>↑</button>
+          <button onClick={sendMessage} disabled={!input.trim() || loading} style={{ background: input.trim() && !loading ? C.terra : C.sand, color: input.trim() && !loading ? C.white : C.textLight, border: "none", padding: "13px 22px", fontSize: 20, cursor: input.trim() && !loading ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, borderRadius: 4 }}>↑</button>
         </div>
         <div style={{ maxWidth: 640, margin: "8px auto 0", fontFamily: sans, fontSize: 11, color: C.textLight, letterSpacing: "0.04em" }}>
           Press Enter to send · Shift+Enter for new line
