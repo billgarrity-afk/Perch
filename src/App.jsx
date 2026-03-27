@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 
-// Ruby's photo as the chat avatar
-const RUBY_PHOTO = "https://raw.githubusercontent.com/billgarrity-afk/Perch/main/src/ruby.png";
+// Ruby illustrated mascot — full body waving (landing page hero)
+const RUBY_HERO = "https://res.cloudinary.com/dhtxz02lj/image/upload/v1774613663/9056233F-EDAF-4517-8D98-3295A4B9B130_eu39i4.png";
+
+// Ruby circular badge (nav + chat avatar)
+const RUBY_BADGE = "https://res.cloudinary.com/dhtxz02lj/image/upload/v1774616683/EEDFA510-9F58-4F7A-B819-DAF836E8E08E_s7mmnp.png";
 
 const SYSTEM_PROMPT = `You are Ruby, the friendly and knowledgeable neighborhood guide for the Raleigh-Durham-Chapel Hill Triangle area of North Carolina — including all the suburban markets that make up the full DMA. You are the warm, intelligent face of Perch, powered by ClubOS AI. You help people relocating to the Triangle find the perfect neighborhood or city based on their lifestyle, budget, commute needs, and priorities.
 
@@ -9,170 +12,135 @@ You have the warmth and trustworthiness of a golden retriever — approachable, 
 
 YOUR MARKET KNOWLEDGE:
 
-RALEIGH (Urban Core & Established Neighborhoods):
-- Downtown Raleigh: Young professionals, walkable, best nightlife in the Triangle, price premium, parking tough. Brewery Bhavana, Raleigh Beer Garden, Moore Square nearby.
+RALEIGH:
+- Downtown Raleigh: Young professionals, walkable, best nightlife, price premium, parking tough. Brewery Bhavana, Raleigh Beer Garden, Moore Square.
 - North Hills: Upscale midtown, self-contained, great for SAS/tech workers, luxury apartments, less gritty charm.
 - Boylan Heights: Historic craftsman bungalows, front porches, tight community, steps from downtown, older housing stock.
-- Five Points: Charming, local shops, great restaurants, established trees, competitive real estate market.
-- Cameron Village: Central location, walkable to shops and restaurants, mix of young professionals and families.
-- Brier Creek: Far northwest Raleigh, great for RTP workers, very suburban, chain restaurants, newer construction.
+- Five Points: Charming, local shops, great restaurants, established trees, competitive market.
+- Cameron Village: Central, walkable to shops and restaurants, young professionals and families.
+- Brier Creek: Far northwest Raleigh, great for RTP workers, very suburban, newer construction.
 
-DURHAM (Creative & Diverse):
-- Downtown Durham: The Triangle's coolest urban neighborhood. American Tobacco Campus, DPAC, James Beard restaurants, authentic creative energy. Some blocks still transitioning.
-- Ninth Street / Duke Park: Best walkable neighborhood in Durham. Independent coffee, bookstores, Duke University nearby, mature trees, narrow streets.
-- Woodcroft: Established family suburb in SW Durham, great schools, close to RTP, very car-dependent.
-- Hope Valley: Elegant, established, golf community feel, large lots, older money Durham.
-- Forest Hills: Beautiful older homes, close to downtown Durham, strong community feel.
+DURHAM:
+- Downtown Durham: Triangle's coolest urban neighborhood. American Tobacco Campus, DPAC, James Beard restaurants, authentic creative energy.
+- Ninth Street / Duke Park: Best walkable Durham neighborhood. Independent coffee, bookstores, Duke nearby, mature trees.
+- Woodcroft: Established family suburb, SW Durham, great schools, close to RTP, car-dependent.
+- Hope Valley: Elegant, established, golf community feel, large lots.
+- Forest Hills: Beautiful older homes, close to downtown Durham.
 
 CHAPEL HILL / CARRBORO:
 - Chapel Hill / Franklin Street: UNC energy, world-class culture and hospitals, top schools, game day traffic brutal.
-- Carrboro: The Triangle's most progressive artsy community. Cat's Cradle, farmers market, independent everything. Limited inventory moves fast.
-- Southern Village: Planned community, very family-friendly, walkable village center, popular with UNC faculty.
+- Carrboro: Most progressive artsy community. Cat's Cradle, farmers market, independent everything.
+- Southern Village: Planned community, family-friendly, walkable village center.
 
-CARY / APEX / MORRISVILLE (Southwest Corridor):
-- Cary: Consistently one of America's safest cities. Immaculate, excellent schools, Wegmans, easy RTP access. Very suburban — no urban grit.
-- Apex: Historic downtown with real charm, slightly more affordable than Cary, fast-growing, great schools. Construction and traffic growing pains.
-- Morrisville: Inside RTP, extremely diverse and international, most convenient tech commute, lacks walkable downtown.
-- Holly Springs: Fast-growing southern suburb, newer construction, excellent schools, BB&T ballpark, family-friendly, slightly farther commute.
-- Fuquay-Varina: Real small-town charm with a genuine historic downtown, more affordable than Holly Springs, growing fast, great for families wanting space. About 30 min to downtown Raleigh.
+CARY / APEX / MORRISVILLE:
+- Cary: One of America's safest cities. Immaculate, excellent schools, Wegmans, easy RTP access.
+- Apex: Historic downtown with charm, slightly more affordable than Cary, fast-growing, great schools.
+- Morrisville: Inside RTP, extremely diverse, most convenient tech commute, lacks walkable downtown.
+- Holly Springs: Fast-growing southern suburb, newer construction, excellent schools, family-friendly.
+- Fuquay-Varina: Real small-town charm, more affordable than Holly Springs, growing fast. 30 min to Raleigh.
 
 NORTHERN SUBURBS:
-- Wake Forest: Booming northern suburb, hugely popular with families relocating from the Northeast and Midwest. Excellent schools, newer construction, real downtown with character, WakeMed hospital nearby. About 25 min to downtown Raleigh.
+- Wake Forest: Booming northern suburb, popular with families from Northeast/Midwest. Excellent schools, newer construction, real downtown. 25 min to Raleigh.
 
-EASTERN CORRIDOR (Affordable & Up-and-Coming):
-- Garner: Underrated and underpriced. South of Raleigh, close-in, great for first-time buyers priced out of Raleigh proper. Easy I-40 access. 15 min to downtown Raleigh.
-- Knightdale: Eastern Raleigh suburb, very family-oriented, newer subdivisions, affordable, growing fast. 20 min to downtown.
-- Clayton: Johnston County, further out but popular. Affordable homes, small-town feel, good schools. 30-35 min to Raleigh.
-- Wendell: Small and authentic, east of Raleigh, very affordable. Wendell Falls is a notable master-planned community here. 25 min to downtown.
-- Zebulon: Most rural of the Triangle suburbs, very affordable, small-town feel. Best for buyers who want acreage or maximum value. 30-40 min commute.
+EASTERN CORRIDOR:
+- Garner: Underrated and underpriced. South of Raleigh, great for first-time buyers. 15 min to downtown.
+- Knightdale: Family-oriented, newer subdivisions, affordable, growing fast. 20 min to downtown.
+- Clayton: Further out, affordable homes, small-town feel, good schools. 30-35 min to Raleigh.
+- Wendell: Small and authentic, very affordable. Wendell Falls is notable here. 25 min to downtown.
+- Zebulon: Most rural, very affordable, small-town feel, best for buyers wanting acreage. 30-40 min commute.
 
 CONVERSATION FLOW:
 1. Greet them warmly as Ruby and ask what brings them to the Triangle
 2. Naturally gather: budget (rent or buy), who's moving, where they'll work, lifestyle priorities
-3. After 3-4 exchanges recommend TOP 3 neighborhoods with vivid specific descriptions, typical rent AND purchase price ranges, commute context, 3 things to love, and 1 honest tradeoff
-4. IMPORTANT: Write neighborhood names as plain text — never use asterisks or markdown bold formatting like **Wake Forest**. Just write Wake Forest naturally.
-5. After recommendations ask at least 1-2 follow up questions — have a real back and forth before offering to connect them with a specialist
-6. Only after genuine engagement with recommendations, naturally say you can connect them with local specialists and end with [SHOW_LEAD_FORM]
-7. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations — always have at least one more exchange first
+3. After 3-4 exchanges recommend TOP 3 neighborhoods — vivid descriptions, rent AND purchase price ranges, commute context, 3 things to love, 1 honest tradeoff
+4. Write neighborhood names as plain text — never use asterisks or markdown bold like **Wake Forest**
+5. After recommendations ask follow-up questions — have real back and forth before offering specialist connection
+6. Only after genuine engagement say you can connect them with local specialists and end with [SHOW_LEAD_FORM]
+7. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations
 
-RUBY'S PERSONALITY RULES:
-- Warm, direct, and genuinely helpful — like a trusted friend who grew up here
-- Never use asterisks or markdown formatting — plain conversational text only
-- Never be generic — always be specific to the Triangle
+RUBY'S RULES:
+- Warm, direct, genuinely helpful — like a trusted friend who grew up here
+- Never use asterisks or markdown — plain conversational text only
+- Always be specific to the Triangle — never generic
 - Give honest opinions including honest tradeoffs
 - Reference real landmarks, employers, roads (I-40, 540, 64, US-1)
-- When budget is tight, proactively mention Garner, Knightdale, Fuquay-Varina as underrated values
-- When kids/schools mentioned, always consider Wake Forest, Cary, Apex, Holly Springs
-- When remote work mentioned, open up Clayton, Wendell, Zebulon
-- Sign off warmly — you are Ruby, not a chatbot`;
+- Tight budget → mention Garner, Knightdale, Fuquay-Varina
+- Kids/schools → Wake Forest, Cary, Apex, Holly Springs
+- Remote work → Clayton, Wendell, Zebulon`;
 
 const C = {
-  cream: "#F7F2E8", creamMid: "#EEE8D8", creamDark: "#E4DCCA",
-  sage: "#4E7050", sageDark: "#335235", sageMid: "#6B8F6D",
-  sageLight: "#B8CEB8", sagePale: "rgba(78,112,80,0.08)",
-  terra: "#B85C38", terraLight: "rgba(184,92,56,0.1)",
-  sand: "#D8CCAA", sandLight: "rgba(216,204,170,0.3)",
-  textDark: "#252018", textMid: "#4E4838", textLight: "#8A7E6A",
-  white: "#FDFAF2", gold: "#C8963E",
+  white: "#FFFFFF",
+  offWhite: "#F8F9FB",
+  navy: "#0A1628",
+  navyMid: "#152238",
+  navyLight: "#1E3250",
+  gold: "#C9A84C",
+  goldLight: "#E8C96A",
+  goldPale: "rgba(201,168,76,0.12)",
+  steel: "#E8EDF4",
+  steelDark: "#D0D9E8",
+  textDark: "#0A1628",
+  textMid: "#4A5568",
+  textLight: "#8A9BB0",
+  ruby: "#C0392B",
 };
 
-const serif = "Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif";
-const sans = "'Gill Sans', 'Gill Sans MT', Optima, Candara, sans-serif";
+const display = "'Playfair Display', 'Didot', Georgia, serif";
+const body = "'DM Sans', 'Helvetica Neue', system-ui, sans-serif";
 
 const MARKETS = [
-  "Raleigh", "Durham", "Chapel Hill", "Carrboro",
-  "Cary", "Apex", "Wake Forest", "Holly Springs",
-  "Fuquay-Varina", "Garner", "Knightdale", "Clayton",
-  "Morrisville", "Wendell", "Zebulon"
+  "Raleigh", "Durham", "Chapel Hill", "Carrboro", "Cary",
+  "Apex", "Wake Forest", "Holly Springs", "Fuquay-Varina",
+  "Garner", "Knightdale", "Clayton", "Morrisville", "Wendell", "Zebulon"
 ];
 
-// Ruby illustrated SVG logo — warm golden retriever face
-function RubyLogo({ size = 40 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      {/* Head base */}
-      <ellipse cx="50" cy="52" rx="34" ry="32" fill="#C8722A" />
-      {/* Forehead lighter */}
-      <ellipse cx="50" cy="38" rx="24" ry="18" fill="#D4863A" />
-      {/* Left ear */}
-      <ellipse cx="20" cy="58" rx="12" ry="20" fill="#A85A1A" transform="rotate(-15 20 58)" />
-      {/* Right ear */}
-      <ellipse cx="80" cy="58" rx="12" ry="20" fill="#A85A1A" transform="rotate(15 80 58)" />
-      {/* Snout */}
-      <ellipse cx="50" cy="65" rx="18" ry="14" fill="#C47830" />
-      {/* Nose */}
-      <ellipse cx="50" cy="60" rx="8" ry="6" fill="#2A1A0A" />
-      {/* Nose highlight */}
-      <ellipse cx="47" cy="58" rx="2" ry="1.5" fill="rgba(255,255,255,0.4)" />
-      {/* Left eye white */}
-      <ellipse cx="36" cy="46" rx="7" ry="6.5" fill="#F5E8D0" />
-      {/* Right eye white */}
-      <ellipse cx="64" cy="46" rx="7" ry="6.5" fill="#F5E8D0" />
-      {/* Left eye */}
-      <ellipse cx="36" cy="46" rx="5" ry="5" fill="#3D1F00" />
-      {/* Right eye */}
-      <ellipse cx="64" cy="46" rx="5" ry="5" fill="#3D1F00" />
-      {/* Left eye shine */}
-      <circle cx="34" cy="44" r="1.5" fill="white" />
-      {/* Right eye shine */}
-      <circle cx="62" cy="44" r="1.5" fill="white" />
-      {/* Mouth */}
-      <path d="M 42 72 Q 50 78 58 72" stroke="#2A1A0A" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      {/* Chin lighter fur */}
-      <ellipse cx="50" cy="76" rx="10" ry="6" fill="#D4A060" opacity="0.6" />
-    </svg>
-  );
-}
-
-// Ruby photo avatar for chat
-function RubyAvatar({ size = 32 }) {
-  const [imgError, setImgError] = useState(false);
+function RubyBadge({ size = 40 }) {
+  const [err, setErr] = useState(false);
   return (
     <div style={{
       width: size, height: size, borderRadius: "50%",
       overflow: "hidden", flexShrink: 0,
       border: `2px solid ${C.gold}`,
-      background: C.gold,
-      display: "flex", alignItems: "center", justifyContent: "center"
+      background: C.navyLight,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      boxShadow: `0 0 0 3px rgba(201,168,76,0.2)`,
     }}>
-      {!imgError ? (
-        <img
-          src={RUBY_PHOTO}
-          alt="Ruby"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          onError={() => setImgError(true)}
-        />
-      ) : (
-        <RubyLogo size={size - 4} />
-      )}
+      {!err
+        ? <img src={RUBY_BADGE} alt="Ruby" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={() => setErr(true)} />
+        : <span style={{ fontSize: size * 0.5 }}>🐕</span>
+      }
     </div>
   );
 }
 
-function TypingIndicator() {
+function TypingDots() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "14px 18px", background: C.white, border: `1px solid ${C.creamDark}`, borderRadius: "18px 18px 18px 4px", width: "fit-content", marginBottom: 16 }}>
+    <div style={{ display: "flex", gap: 5, padding: "14px 18px", background: C.white, border: `1px solid ${C.steel}`, borderRadius: "18px 18px 18px 4px", width: "fit-content", marginBottom: 16, boxShadow: "0 2px 8px rgba(10,22,40,0.06)" }}>
       {[0, 1, 2].map(i => (
-        <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: C.sageLight, animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+        <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: C.steelDark, animation: `typingBounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
       ))}
-      <style>{`@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}`}</style>
+      <style>{`@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}`}</style>
     </div>
   );
 }
 
-function Message({ msg }) {
+function ChatMessage({ msg }) {
   const isUser = msg.role === "user";
   const content = msg.content.replace("[SHOW_LEAD_FORM]", "").trim();
   return (
-    <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 16, alignItems: "flex-end", gap: 8 }}>
-      {!isUser && <RubyAvatar size={36} />}
+    <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 16, alignItems: "flex-end", gap: 10 }}>
+      {!isUser && <RubyBadge size={34} />}
       <div style={{
-        maxWidth: "75%", background: isUser ? C.sageDark : C.white,
-        color: isUser ? C.white : C.textDark, padding: "13px 18px",
+        maxWidth: "72%",
+        background: isUser ? C.navy : C.white,
+        color: isUser ? C.white : C.textDark,
+        padding: "12px 18px",
         borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-        fontSize: 15, lineHeight: 1.65, fontFamily: serif,
-        border: isUser ? "none" : `1px solid ${C.creamDark}`,
-        boxShadow: "0 1px 4px rgba(0,0,0,0.05)", whiteSpace: "pre-wrap",
+        fontSize: 15, lineHeight: 1.65, fontFamily: body,
+        border: isUser ? "none" : `1px solid ${C.steel}`,
+        boxShadow: isUser ? "0 2px 12px rgba(10,22,40,0.2)" : "0 2px 8px rgba(10,22,40,0.06)",
+        whiteSpace: "pre-wrap",
+        letterSpacing: "-0.01em",
       }}>
         {content}
       </div>
@@ -180,17 +148,17 @@ function Message({ msg }) {
   );
 }
 
-function LeadForm({ conversationSummary, onSubmit, onSkip }) {
+function LeadForm({ summary, onSubmit, onSkip }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", timeline: "", type: "" });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const e = {};
-    if (!form.name.trim()) e.name = "Name is required";
+    if (!form.name.trim()) e.name = "Required";
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = "Valid email required";
-    if (!form.timeline) e.timeline = "Please select a timeline";
-    if (!form.type) e.type = "Please select one";
+    if (!form.timeline) e.timeline = "Required";
+    if (!form.type) e.type = "Required";
     return e;
   };
 
@@ -198,76 +166,73 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
     setSubmitted(true);
-    onSubmit({ ...form, ...conversationSummary, submittedAt: new Date().toISOString() });
+    onSubmit({ ...form, ...summary, submittedAt: new Date().toISOString() });
   };
 
   if (submitted) return (
-    <div style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "28px", marginBottom: 16, maxWidth: "85%", borderRadius: 8 }}>
-      <div style={{ marginBottom: 12 }}><RubyLogo size={48} /></div>
-      <div style={{ fontFamily: serif, fontSize: 18, color: C.sageDark, marginBottom: 8 }}>Ruby's got you covered!</div>
-      <p style={{ fontFamily: serif, fontSize: 14, color: C.textMid, lineHeight: 1.6, margin: 0 }}>
-        A local specialist who knows {conversationSummary.topMatch || "the Triangle"} will be in touch within 24 hours. They'll have your full profile so you won't have to repeat yourself.
+    <div style={{ background: C.white, border: `1px solid ${C.steel}`, borderRadius: 12, padding: 24, marginBottom: 16, maxWidth: "85%", boxShadow: "0 4px 20px rgba(10,22,40,0.08)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+        <RubyBadge size={40} />
+        <div style={{ fontFamily: display, fontSize: 18, color: C.navy }}>You're all set!</div>
+      </div>
+      <p style={{ fontFamily: body, fontSize: 14, color: C.textMid, lineHeight: 1.6, margin: 0 }}>
+        A local specialist who knows {summary.topMatch || "the Triangle"} will reach out within 24 hours — with your full Perch profile already in hand.
       </p>
     </div>
   );
 
-  const inputStyle = (err) => ({
-    width: "100%", background: C.cream,
-    border: `1.5px solid ${err ? C.terra : C.creamDark}`,
-    color: C.textDark, padding: "11px 14px", fontSize: 14,
-    fontFamily: serif, outline: "none", boxSizing: "border-box", borderRadius: 4,
+  const inp = (err) => ({
+    width: "100%", background: C.offWhite, border: `1.5px solid ${err ? C.ruby : C.steel}`,
+    color: C.textDark, padding: "11px 14px", fontSize: 14, fontFamily: body,
+    outline: "none", boxSizing: "border-box", borderRadius: 8, transition: "border-color 0.2s",
   });
-
-  const labelStyle = { fontFamily: sans, fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: C.textLight, marginBottom: 5, display: "block" };
-  const errorStyle = { fontFamily: sans, fontSize: 11, color: C.terra, marginTop: 4 };
+  const lbl = { fontFamily: body, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: C.textLight, marginBottom: 5, display: "block" };
+  const err = { fontFamily: body, fontSize: 11, color: C.ruby, marginTop: 4 };
 
   return (
-    <div onClick={e => e.stopPropagation()} style={{ background: C.white, border: `1.5px solid ${C.sageLight}`, padding: "24px", marginBottom: 16, maxWidth: "90%", boxShadow: `0 4px 24px rgba(78,112,80,0.1)`, borderRadius: 8 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-        <RubyLogo size={44} />
+    <div onClick={e => e.stopPropagation()} style={{ background: C.white, border: `1px solid ${C.steel}`, borderRadius: 12, padding: 24, marginBottom: 16, maxWidth: "92%", boxShadow: "0 8px 32px rgba(10,22,40,0.1)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+        <RubyBadge size={44} />
         <div>
-          <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.terra, marginBottom: 4 }}>Connect with a local specialist</div>
-          <div style={{ fontFamily: serif, fontSize: 16, color: C.textDark }}>Let's find your perfect place in {conversationSummary.topMatch || "the Triangle"}</div>
+          <div style={{ fontFamily: body, fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gold, marginBottom: 3 }}>Connect with a local specialist</div>
+          <div style={{ fontFamily: display, fontSize: 16, color: C.navy }}>Find your place in {summary.topMatch || "the Triangle"}</div>
         </div>
       </div>
+      <p style={{ fontFamily: body, fontSize: 13, color: C.textMid, lineHeight: 1.55, marginBottom: 16 }}>
+        Ruby will pass your full profile to a specialist — they'll reach out within 24 hours with listings matched to exactly what you told her.
+      </p>
 
-      <div style={{ fontFamily: serif, fontSize: 13, color: C.textMid, lineHeight: 1.5, marginBottom: 16 }}>
-        Ruby will pass your full profile to a specialist who knows these neighborhoods inside and out — they'll reach out within 24 hours.
-      </div>
-
-      {conversationSummary.highlights && conversationSummary.highlights.length > 0 && (
-        <div style={{ background: C.sagePale, border: `1px solid ${C.sageLight}`, padding: "12px 14px", marginBottom: 18, borderRadius: 4 }}>
-          <div style={{ fontFamily: sans, fontSize: 9, letterSpacing: "0.25em", textTransform: "uppercase", color: C.sageMid, marginBottom: 8 }}>Your Perch Profile</div>
-          {conversationSummary.highlights.map((h, i) => (
-            <div key={i} style={{ display: "flex", gap: 8, fontSize: 13, color: C.textMid, fontFamily: serif, padding: "2px 0", lineHeight: 1.4 }}>
-              <span style={{ color: C.terra, flexShrink: 0 }}>✦</span> {h}
+      {summary.highlights?.length > 0 && (
+        <div style={{ background: C.goldPale, border: `1px solid rgba(201,168,76,0.25)`, borderRadius: 8, padding: "12px 14px", marginBottom: 16 }}>
+          <div style={{ fontFamily: body, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: C.gold, marginBottom: 8 }}>Your Perch Profile</div>
+          {summary.highlights.map((h, i) => (
+            <div key={i} style={{ display: "flex", gap: 8, fontSize: 13, color: C.textMid, fontFamily: body, padding: "2px 0" }}>
+              <span style={{ color: C.gold }}>✦</span> {h}
             </div>
           ))}
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
         <div>
-          <label style={labelStyle}>Full Name *</label>
-          <input style={inputStyle(errors.name)} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Sarah Mitchell" />
-          {errors.name && <div style={errorStyle}>{errors.name}</div>}
+          <label style={lbl}>Full Name *</label>
+          <input style={inp(errors.name)} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Sarah Mitchell" />
+          {errors.name && <div style={err}>{errors.name}</div>}
         </div>
         <div>
-          <label style={labelStyle}>Phone</label>
-          <input style={inputStyle(false)} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="919-555-0100" />
+          <label style={lbl}>Phone</label>
+          <input style={inp(false)} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="919-555-0100" />
         </div>
       </div>
-
-      <div style={{ marginBottom: 12 }}>
-        <label style={labelStyle}>Email Address *</label>
-        <input style={inputStyle(errors.email)} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@email.com" />
-        {errors.email && <div style={errorStyle}>{errors.email}</div>}
+      <div style={{ marginBottom: 10 }}>
+        <label style={lbl}>Email Address *</label>
+        <input style={inp(errors.email)} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@email.com" />
+        {errors.email && <div style={err}>{errors.email}</div>}
       </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
         <div>
-          <label style={labelStyle}>Move Timeline *</label>
-          <select style={{ ...inputStyle(errors.timeline), appearance: "none" }} value={form.timeline} onChange={e => setForm({ ...form, timeline: e.target.value })}>
+          <label style={lbl}>Move Timeline *</label>
+          <select style={{ ...inp(errors.timeline), appearance: "none" }} value={form.timeline} onChange={e => setForm({ ...form, timeline: e.target.value })}>
             <option value="">Select...</option>
             <option value="asap">ASAP / Already here</option>
             <option value="30days">Within 30 days</option>
@@ -276,29 +241,27 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
             <option value="6months">3–6 months</option>
             <option value="exploring">Just exploring</option>
           </select>
-          {errors.timeline && <div style={errorStyle}>{errors.timeline}</div>}
+          {errors.timeline && <div style={err}>{errors.timeline}</div>}
         </div>
         <div>
-          <label style={labelStyle}>Renting or Buying? *</label>
-          <select style={{ ...inputStyle(errors.type), appearance: "none" }} value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+          <label style={lbl}>Renting or Buying? *</label>
+          <select style={{ ...inp(errors.type), appearance: "none" }} value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
             <option value="">Select...</option>
             <option value="rent">Renting</option>
             <option value="buy">Buying</option>
             <option value="either">Open to either</option>
           </select>
-          {errors.type && <div style={errorStyle}>{errors.type}</div>}
+          {errors.type && <div style={err}>{errors.type}</div>}
         </div>
       </div>
-
-      <div style={{ fontFamily: sans, fontSize: 11, color: C.textLight, lineHeight: 1.5, marginBottom: 16, letterSpacing: "0.02em" }}>
-        🔒 Your information is only shared with the specialist matched to your neighborhoods. No spam, no mass lists.
+      <div style={{ fontFamily: body, fontSize: 11, color: C.textLight, marginBottom: 14 }}>
+        🔒 Only shared with your matched specialist. No spam, ever.
       </div>
-
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button onClick={handleSubmit} style={{ background: C.terra, color: C.white, border: "none", padding: "14px 32px", fontSize: 13, fontFamily: sans, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", flex: 1, borderRadius: 4 }}>
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <button onClick={handleSubmit} style={{ background: C.navy, color: C.white, border: "none", padding: "13px 28px", fontSize: 13, fontFamily: body, fontWeight: 600, letterSpacing: "0.06em", cursor: "pointer", flex: 1, borderRadius: 8 }}>
           Connect Me with a Specialist →
         </button>
-        <button onClick={onSkip} style={{ background: "none", border: "none", color: C.textLight, fontFamily: sans, fontSize: 12, cursor: "pointer", letterSpacing: "0.08em", textTransform: "uppercase", padding: "14px 8px", whiteSpace: "nowrap" }}>
+        <button onClick={onSkip} style={{ background: "none", border: "none", color: C.textLight, fontFamily: body, fontSize: 12, cursor: "pointer", padding: "13px 8px", whiteSpace: "nowrap" }}>
           Not now
         </button>
       </div>
@@ -306,32 +269,32 @@ function LeadForm({ conversationSummary, onSubmit, onSkip }) {
   );
 }
 
-function extractConversationSummary(messages) {
-  const fullText = messages.map(m => m.content).join(" ").toLowerCase();
+function extractSummary(messages) {
+  const full = messages.map(m => m.content).join(" ").toLowerCase();
   const highlights = [];
   let topMatch = "";
 
-  if (fullText.includes("rent") && !fullText.includes("buying")) highlights.push("Looking to rent");
-  else if (fullText.includes("buy") || fullText.includes("purchase")) highlights.push("Looking to buy");
+  if (full.includes("rent") && !full.includes("buying")) highlights.push("Looking to rent");
+  else if (full.includes("buy") || full.includes("purchase")) highlights.push("Looking to buy");
 
-  if (fullText.includes("kids") || fullText.includes("children") || fullText.includes("school")) highlights.push("Moving with family / children");
-  else if (fullText.includes("partner") || fullText.includes("spouse") || fullText.includes("wife") || fullText.includes("husband")) highlights.push("Moving with partner");
-  else if (fullText.includes("roommate")) highlights.push("Moving with roommates");
-  else if (fullText.includes("just me") || fullText.includes("solo") || fullText.includes("myself")) highlights.push("Moving solo");
+  if (full.includes("kids") || full.includes("children") || full.includes("school")) highlights.push("Moving with family");
+  else if (full.includes("partner") || full.includes("spouse") || full.includes("wife") || full.includes("husband")) highlights.push("Moving with partner");
+  else if (full.includes("roommate")) highlights.push("Moving with roommates");
+  else if (full.includes("just me") || full.includes("solo")) highlights.push("Moving solo");
 
-  const employers = ["rtp", "cisco", "sas", "red hat", "duke", "unc", "wakemed", "rex", "ibm", "lenovo", "remote"];
-  employers.forEach(e => { if (fullText.includes(e)) highlights.push(`Works at / near ${e.toUpperCase()}`); });
+  ["rtp", "cisco", "sas", "red hat", "duke", "unc", "wakemed", "remote"].forEach(e => {
+    if (full.includes(e)) highlights.push(`Works near ${e.toUpperCase()}`);
+  });
 
   const assistantText = messages.filter(m => m.role === "assistant").map(m => m.content).join(" ");
-  const neighborhoods = ["apex", "cary", "wake forest", "downtown raleigh", "north hills", "downtown durham", "chapel hill", "carrboro", "morrisville", "holly springs", "fuquay-varina", "garner", "knightdale", "clayton", "wendell", "zebulon"];
-  for (const n of neighborhoods) {
+  const hoods = ["apex", "cary", "wake forest", "downtown raleigh", "north hills", "downtown durham", "chapel hill", "carrboro", "morrisville", "holly springs", "fuquay-varina", "garner", "knightdale", "clayton", "wendell", "zebulon"];
+  for (const n of hoods) {
     if (assistantText.toLowerCase().includes(n)) {
-      topMatch = n.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+      topMatch = n.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
       break;
     }
   }
-
-  if (topMatch) highlights.push(`Top Perch match: ${topMatch}`);
+  if (topMatch) highlights.push(`Top match: ${topMatch}`);
   return { highlights, topMatch };
 }
 
@@ -340,203 +303,300 @@ export default function Perch() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showLeadForm, setShowLeadForm] = useState(false);
-  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [formDone, setFormDone] = useState(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading, showLeadForm]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading, showForm]);
 
   const startChat = async () => {
     setScreen("chat");
     setLoading(true);
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: "Hi, I'm looking to move to the Triangle area." }]
-        })
+      const res = await fetch("/api/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: SYSTEM_PROMPT, messages: [{ role: "user", content: "Hi, I'm looking to move to the Triangle area." }] })
       });
-      const data = await response.json();
-      const text = data.content.map(i => i.text || "").join("");
-      setMessages([{ role: "assistant", content: text }]);
-    } catch (e) {
-      setMessages([{ role: "assistant", content: "Hey there! I'm Ruby, your Triangle neighborhood guide. I'm having a little trouble connecting right now — try refreshing and we'll get started finding your perfect spot!" }]);
+      const data = await res.json();
+      setMessages([{ role: "assistant", content: data.content.map(i => i.text || "").join("") }]);
+    } catch {
+      setMessages([{ role: "assistant", content: "Hey! I'm Ruby, your Triangle neighborhood guide. Having a little trouble connecting — try refreshing!" }]);
     }
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
-  const sendMessage = async () => {
+  const send = async () => {
     if (!input.trim() || loading) return;
     const userMsg = { role: "user", content: input.trim() };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
-    setInput("");
-    setLoading(true);
+    const next = [...messages, userMsg];
+    setMessages(next); setInput(""); setLoading(true);
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: newMessages.map(m => ({ role: m.role, content: m.content }))
-        })
+      const res = await fetch("/api/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: SYSTEM_PROMPT, messages: next.map(m => ({ role: m.role, content: m.content })) })
       });
-      const data = await response.json();
+      const data = await res.json();
       const text = data.content.map(i => i.text || "").join("");
-      if (text.includes("[SHOW_LEAD_FORM]") && !showLeadForm && !leadSubmitted) {
-        setShowLeadForm(true);
-      }
+      if (text.includes("[SHOW_LEAD_FORM]") && !showForm && !formDone) setShowForm(true);
       setMessages(prev => [...prev, { role: "assistant", content: text }]);
-    } catch (e) {
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Try sending that again!" }]);
+    } catch {
+      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Try again!" }]);
     }
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
-  const handleKey = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  const handleKey = (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } };
+
+  const handleLeadSubmit = (data) => {
+    setFormDone(true); setShowForm(false);
+    setMessages(prev => [...prev, { role: "assistant", content: `You're all set! I've passed everything to a specialist who knows ${data.topMatch || "the Triangle"} really well. They'll be in touch within 24 hours.\n\nStill here if you have more questions!` }]);
   };
 
-  const handleLeadSubmit = (leadData) => {
-    console.log("NEW PERCH LEAD:", leadData);
-    setLeadSubmitted(true);
-    setShowLeadForm(false);
-    setMessages(prev => [...prev, {
-      role: "assistant",
-      content: `You're all set! I've passed your full profile to a local specialist who knows ${leadData.topMatch || "the Triangle"} really well. They'll reach out within 24 hours.\n\nIn the meantime I'm still here if you have any more questions about any of these neighborhoods!`
-    }]);
-  };
+  const summary = extractSummary(messages);
 
-  const conversationSummary = extractConversationSummary(messages);
-
-  // LANDING
+  // ── LANDING ──
   if (screen === "landing") return (
-    <div style={{ minHeight: "100vh", background: C.cream, fontFamily: serif, color: C.textDark, position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 60% 50% at 15% 15%, rgba(78,112,80,0.07) 0%, transparent 70%), radial-gradient(ellipse 50% 40% at 85% 85%, rgba(184,92,56,0.05) 0%, transparent 70%)` }} />
-      <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 28px", position: "relative", zIndex: 1 }}>
-        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: 60, paddingBottom: 60 }}>
+    <div style={{ minHeight: "100vh", background: C.white, fontFamily: body, color: C.textDark, overflowX: "hidden" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .cta-primary:hover { background: #1E3250 !important; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(10,22,40,0.25) !important; }
+        .cta-gold:hover { background: #B8943C !important; transform: translateY(-1px); }
+        .market-tag:hover { border-color: ${C.gold} !important; color: ${C.navy} !important; background: ${C.goldPale} !important; }
+        .step-card:hover { box-shadow: 0 8px 32px rgba(10,22,40,0.1) !important; transform: translateY(-2px); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .f1 { animation: fadeUp 0.6s ease forwards; }
+        .f2 { animation: fadeUp 0.6s ease 0.1s forwards; opacity: 0; }
+        .f3 { animation: fadeUp 0.6s ease 0.2s forwards; opacity: 0; }
+        .f4 { animation: fadeUp 0.6s ease 0.3s forwards; opacity: 0; }
+        .f5 { animation: fadeUp 0.6s ease 0.45s forwards; opacity: 0; }
+        @media (max-width: 768px) {
+          .hero-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+          .ruby-card { display: none !important; }
+          .steps-grid { grid-template-columns: 1fr !important; }
+          .nav-inner { padding: 0 20px !important; }
+          .hero-inner { padding: 60px 20px !important; }
+        }
+      `}</style>
 
-          {/* Ruby illustrated logo on landing */}
-          <div style={{ marginBottom: 20 }}>
-            <RubyLogo size={72} />
+      {/* Nav */}
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "rgba(255,255,255,0.95)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${C.steel}` }}>
+        <div className="nav-inner" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <RubyBadge size={32} />
+            <span style={{ fontFamily: display, fontSize: 20, fontWeight: 600, color: C.navy, letterSpacing: "-0.02em" }}>Perch</span>
           </div>
-
-          {/* ClubOS AI badge */}
-          <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: C.gold, marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 24, height: 1.5, background: C.gold, display: "inline-block" }} />
-            A ClubOS AI Experience
-          </div>
-
-          <h1 style={{ fontSize: "clamp(54px, 10vw, 92px)", fontWeight: 400, lineHeight: 0.98, letterSpacing: "-0.025em", margin: "0", fontFamily: serif, color: C.textDark }}>Find where</h1>
-          <h1 style={{ fontSize: "clamp(54px, 10vw, 92px)", fontWeight: 400, lineHeight: 0.98, letterSpacing: "-0.025em", margin: "0 0 28px", fontFamily: serif, color: C.terra, fontStyle: "italic" }}>you land.</h1>
-          <div style={{ width: 52, height: 2, background: C.sand, marginBottom: 28 }} />
-
-          <p style={{ fontSize: 18, color: C.textMid, maxWidth: 460, lineHeight: 1.72, marginBottom: 12, fontFamily: serif }}>
-            Meet Ruby — your personal Triangle neighborhood guide. Tell her where you're coming from, what you do, and how you like to live. She'll find your perfect match.
-          </p>
-          <p style={{ fontSize: 14, color: C.textLight, maxWidth: 400, lineHeight: 1.6, marginBottom: 40, fontFamily: sans, letterSpacing: "0.02em" }}>
-            No forms. No filters. Just a real conversation with someone who knows the Triangle.
-          </p>
-
-          <div style={{ marginBottom: 44 }}>
-            <div style={{ fontFamily: sans, fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: C.sageMid, marginBottom: 12 }}>Covering the full Triangle</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-              {MARKETS.map(city => (
-                <span key={city} style={{ fontFamily: sans, fontSize: 11, color: C.sageDark, border: `1px solid ${C.sageLight}`, padding: "4px 11px", background: C.sagePale, letterSpacing: "0.03em" }}>{city}</span>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
-            <button onClick={startChat} style={{ background: C.terra, color: C.white, border: "none", padding: "18px 48px", fontSize: 13, fontFamily: sans, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", borderRadius: 4 }}>
-              Chat with Ruby →
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <span style={{ fontFamily: body, fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gold }}>ClubOS AI</span>
+            <button className="cta-primary" onClick={startChat} style={{ background: C.navy, color: C.white, border: "none", padding: "9px 22px", fontSize: 13, fontFamily: body, fontWeight: 600, cursor: "pointer", borderRadius: 8, transition: "all 0.2s", letterSpacing: "0.02em" }}>
+              Talk to Ruby
             </button>
-            <span style={{ fontFamily: sans, fontSize: 12, color: C.textLight, letterSpacing: "0.04em" }}>Free · No signup needed</span>
-          </div>
-
-          <div style={{ display: "flex", gap: 36, marginTop: 56, paddingTop: 32, borderTop: `1px solid ${C.creamDark}` }}>
-            {[["15", "Cities & towns"], ["164k+", "Housing units"], ["60 sec", "To your match"]].map(([n, l]) => (
-              <div key={l}>
-                <div style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: C.sageDark, letterSpacing: "-0.02em" }}>{n}</div>
-                <div style={{ fontFamily: sans, fontSize: 11, color: C.textLight, letterSpacing: "0.08em", marginTop: 3 }}>{l}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* ClubOS AI footer */}
-          <div style={{ marginTop: 48, fontFamily: sans, fontSize: 10, color: C.textLight, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            Powered by ClubOS AI · perchtriangle.com
           </div>
         </div>
+      </nav>
+
+      {/* Hero */}
+      <div style={{ paddingTop: 64 }}>
+        <div className="hero-inner" style={{ maxWidth: 1100, margin: "0 auto", padding: "80px 40px 60px" }}>
+          <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 440px", gap: 80, alignItems: "center" }}>
+
+            {/* Left */}
+            <div>
+              <div className="f1" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: C.goldPale, border: `1px solid rgba(201,168,76,0.35)`, borderRadius: 100, padding: "6px 16px", marginBottom: 28 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.gold, display: "inline-block" }} />
+                <span style={{ fontFamily: body, fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gold }}>Powered by ClubOS AI</span>
+              </div>
+
+              <h1 className="f2" style={{ fontFamily: display, fontSize: "clamp(40px, 6vw, 68px)", fontWeight: 600, lineHeight: 1.05, letterSpacing: "-0.03em", color: C.navy, marginBottom: 4 }}>
+                Find where
+              </h1>
+              <h1 className="f2" style={{ fontFamily: display, fontSize: "clamp(40px, 6vw, 68px)", fontWeight: 400, lineHeight: 1.05, letterSpacing: "-0.03em", color: C.navy, marginBottom: 28, fontStyle: "italic" }}>
+                you land.
+              </h1>
+
+              <p className="f3" style={{ fontSize: 18, color: C.textMid, lineHeight: 1.7, maxWidth: 480, marginBottom: 12, fontWeight: 300 }}>
+                Meet Ruby — your personal Triangle neighborhood guide. Tell her where you're coming from, what you do, and how you like to live.
+              </p>
+              <p className="f3" style={{ fontSize: 15, color: C.textLight, marginBottom: 44 }}>
+                No forms. No filters. A real conversation.
+              </p>
+
+              <div className="f4" style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 56 }}>
+                <button className="cta-primary" onClick={startChat} style={{ background: C.navy, color: C.white, border: "none", padding: "16px 40px", fontSize: 15, fontFamily: body, fontWeight: 600, cursor: "pointer", borderRadius: 10, transition: "all 0.2s", display: "flex", alignItems: "center", gap: 10, boxShadow: "0 4px 16px rgba(10,22,40,0.2)" }}>
+                  Talk to Ruby <span style={{ fontSize: 18 }}>→</span>
+                </button>
+                <span style={{ fontFamily: body, fontSize: 13, color: C.textLight }}>Free · No signup needed</span>
+              </div>
+
+              {/* Stats */}
+              <div className="f5" style={{ display: "flex", gap: 40, paddingTop: 36, borderTop: `1px solid ${C.steel}` }}>
+                {[["15", "Cities covered"], ["164k+", "Housing units"], ["< 60 sec", "To your match"]].map(([n, l]) => (
+                  <div key={l}>
+                    <div style={{ fontFamily: display, fontSize: 28, fontWeight: 600, color: C.navy, letterSpacing: "-0.03em" }}>{n}</div>
+                    <div style={{ fontFamily: body, fontSize: 12, color: C.textLight, marginTop: 3, fontWeight: 500 }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — Ruby hero card */}
+            <div className="ruby-card f3" style={{ position: "relative" }}>
+              <div style={{ position: "absolute", inset: -16, background: `linear-gradient(135deg, ${C.goldPale} 0%, rgba(10,22,40,0.03) 100%)`, borderRadius: 28, zIndex: 0 }} />
+              <div style={{ position: "relative", zIndex: 1, background: C.white, borderRadius: 24, padding: 28, boxShadow: "0 24px 64px rgba(10,22,40,0.12), 0 4px 16px rgba(10,22,40,0.06)" }}>
+
+                {/* Ruby full body image */}
+                <div style={{ width: "100%", borderRadius: 16, overflow: "hidden", marginBottom: 20, background: C.offWhite, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 320 }}>
+                  <img
+                    src={RUBY_HERO}
+                    alt="Ruby — Perch Neighborhood Guide"
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                    onError={e => { e.target.style.display = "none"; e.target.parentElement.innerHTML = '<div style="padding:60px;font-size:80px;text-align:center">🐕</div>'; }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div>
+                    <div style={{ fontFamily: display, fontSize: 20, fontWeight: 600, color: C.navy }}>Ruby</div>
+                    <div style={{ fontFamily: body, fontSize: 12, color: C.textLight, fontWeight: 500 }}>Triangle Neighborhood Guide</div>
+                  </div>
+                  <div style={{ background: C.goldPale, border: `1px solid rgba(201,168,76,0.35)`, borderRadius: 100, padding: "4px 12px" }}>
+                    <span style={{ fontFamily: body, fontSize: 10, fontWeight: 700, color: C.gold }}>● Online</span>
+                  </div>
+                </div>
+
+                {/* Sample bubble */}
+                <div style={{ background: C.offWhite, borderRadius: 12, padding: "12px 16px", border: `1px solid ${C.steel}` }}>
+                  <p style={{ fontFamily: body, fontSize: 13, color: C.textMid, lineHeight: 1.55, margin: 0 }}>
+                    "Hey! I'm Ruby. Tell me about yourself — where are you moving from and what brings you to the Triangle?"
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* Markets strip */}
+      <div style={{ background: C.offWhite, borderTop: `1px solid ${C.steel}`, borderBottom: `1px solid ${C.steel}`, padding: "20px 40px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: body, fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: C.textLight, flexShrink: 0 }}>Covering</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {MARKETS.map(city => (
+              <span className="market-tag" key={city} style={{ fontFamily: body, fontSize: 12, fontWeight: 500, color: C.textMid, border: `1px solid ${C.steel}`, borderRadius: 100, padding: "4px 14px", background: C.white, cursor: "default", transition: "all 0.15s" }}>{city}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* How it works */}
+      <div style={{ padding: "80px 40px", maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 52 }}>
+          <div style={{ fontFamily: body, fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: C.gold, marginBottom: 12 }}>How It Works</div>
+          <h2 style={{ fontFamily: display, fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 600, color: C.navy, letterSpacing: "-0.02em" }}>A conversation, not a search</h2>
+        </div>
+        <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}>
+          {[
+            ["01", "Tell Ruby about yourself", "Where you're coming from, what you do, how you like to live. No forms — just a real conversation."],
+            ["02", "Ruby finds your match", "She weighs your budget, lifestyle, commute, and priorities against every Triangle neighborhood — then gives you her honest top 3."],
+            ["03", "Connect with a specialist", "Ruby passes your full profile to a local specialist who knows exactly what you're looking for."],
+          ].map(([num, title, desc]) => (
+            <div className="step-card" key={num} style={{ padding: "32px 28px", border: `1px solid ${C.steel}`, borderRadius: 16, background: C.white, transition: "all 0.2s", cursor: "default" }}>
+              <div style={{ fontFamily: display, fontSize: 42, fontWeight: 600, color: C.gold, marginBottom: 16, lineHeight: 1 }}>{num}</div>
+              <div style={{ fontFamily: display, fontSize: 18, fontWeight: 600, color: C.navy, marginBottom: 10 }}>{title}</div>
+              <div style={{ fontFamily: body, fontSize: 14, color: C.textMid, lineHeight: 1.65 }}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA strip */}
+      <div style={{ background: C.navy, padding: "72px 40px" }}>
+        <div style={{ maxWidth: 580, margin: "0 auto", textAlign: "center" }}>
+          <img src={RUBY_BADGE} alt="Ruby" style={{ width: 80, height: 80, borderRadius: "50%", border: `3px solid ${C.gold}`, marginBottom: 20 }} onError={e => { e.target.style.display = "none"; }} />
+          <h2 style={{ fontFamily: display, fontSize: "clamp(26px, 4vw, 40px)", fontWeight: 600, color: C.white, letterSpacing: "-0.02em", marginBottom: 12 }}>
+            Ready to find your spot?
+          </h2>
+          <p style={{ fontFamily: body, fontSize: 16, color: "rgba(255,255,255,0.55)", marginBottom: 32, lineHeight: 1.6 }}>
+            Ruby knows the Triangle. All 15 communities, real pricing, honest opinions.
+          </p>
+          <button className="cta-gold" onClick={startChat} style={{ background: C.gold, color: C.navy, border: "none", padding: "16px 48px", fontSize: 15, fontFamily: body, fontWeight: 700, cursor: "pointer", borderRadius: 10, transition: "all 0.2s" }}>
+            Talk to Ruby →
+          </button>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: "24px 40px", borderTop: `1px solid ${C.steel}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <RubyBadge size={24} />
+          <span style={{ fontFamily: display, fontSize: 15, fontWeight: 600, color: C.navy }}>Perch</span>
+          <span style={{ fontFamily: body, fontSize: 12, color: C.textLight }}>· A ClubOS AI Experience</span>
+        </div>
+        <div style={{ fontFamily: body, fontSize: 12, color: C.textLight }}>perchtriangle.com · 2026</div>
       </div>
     </div>
   );
 
-  // CHAT
+  // ── CHAT ──
   return (
-    <div style={{ height: "100vh", background: C.cream, display: "flex", flexDirection: "column", fontFamily: serif, position: "relative" }}>
-      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, background: `radial-gradient(ellipse 50% 40% at 10% 10%, rgba(78,112,80,0.05) 0%, transparent 60%)` }} />
+    <div style={{ height: "100vh", background: C.offWhite, display: "flex", flexDirection: "column", fontFamily: body }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap'); * { box-sizing: border-box; }`}</style>
 
-      {/* Header with Ruby */}
-      <div style={{ background: C.cream, borderBottom: `1px solid ${C.creamDark}`, padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", zIndex: 2, flexShrink: 0 }}>
+      {/* Chat header */}
+      <div style={{ background: C.white, borderBottom: `1px solid ${C.steel}`, padding: "0 24px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0, boxShadow: "0 1px 8px rgba(10,22,40,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <RubyAvatar size={42} />
+          <RubyBadge size={40} />
           <div>
-            <div style={{ fontFamily: serif, fontSize: 17, fontWeight: 400, color: C.textDark, letterSpacing: "-0.01em" }}>Ruby</div>
-            <div style={{ fontFamily: sans, fontSize: 10, color: C.sageMid, letterSpacing: "0.15em", textTransform: "uppercase" }}>Perch · Triangle Neighborhood Guide</div>
+            <div style={{ fontFamily: display, fontSize: 16, fontWeight: 600, color: C.navy }}>Ruby</div>
+            <div style={{ fontFamily: body, fontSize: 11, color: C.textLight, fontWeight: 500 }}>Perch · Triangle Guide · ClubOS AI</div>
+          </div>
+          <div style={{ background: C.goldPale, border: `1px solid rgba(201,168,76,0.3)`, borderRadius: 100, padding: "3px 10px", marginLeft: 4 }}>
+            <span style={{ fontFamily: body, fontSize: 10, fontWeight: 700, color: C.gold }}>● Online</span>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ fontFamily: sans, fontSize: 9, color: C.gold, letterSpacing: "0.2em", textTransform: "uppercase" }}>ClubOS AI</div>
-          <button onClick={() => { setScreen("landing"); setMessages([]); setShowLeadForm(false); setLeadSubmitted(false); }} style={{ background: "none", border: `1px solid ${C.creamDark}`, color: C.textLight, fontFamily: sans, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer", padding: "7px 16px", borderRadius: 4 }}>← Home</button>
-        </div>
+        <button onClick={() => { setScreen("landing"); setMessages([]); setShowForm(false); setFormDone(false); }} style={{ background: "none", border: `1px solid ${C.steel}`, color: C.textMid, fontFamily: body, fontSize: 12, fontWeight: 600, cursor: "pointer", padding: "7px 16px", borderRadius: 8 }}>
+          ← Home
+        </button>
       </div>
 
       {/* Messages */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 24px 12px", position: "relative", zIndex: 1 }}>
-        <div style={{ maxWidth: 640, margin: "0 auto" }}>
-          {loading && messages.length === 0 && <TypingIndicator />}
-          {messages.map((msg, i) => (
-            <div key={i}>
-              <Message msg={msg} />
-              {showLeadForm && !leadSubmitted && msg.role === "assistant" && msg.content.includes("[SHOW_LEAD_FORM]") && i === messages.length - 1 && (
-                <LeadForm conversationSummary={conversationSummary} onSubmit={handleLeadSubmit} onSkip={() => setShowLeadForm(false)} />
-              )}
-            </div>
-          ))}
-          {loading && messages.length > 0 && <TypingIndicator />}
-          <div ref={bottomRef} />
-        </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "24px", maxWidth: 720, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
+        {loading && messages.length === 0 && <TypingDots />}
+        {messages.map((msg, i) => (
+          <div key={i}>
+            <ChatMessage msg={msg} />
+            {showForm && !formDone && msg.role === "assistant" && msg.content.includes("[SHOW_LEAD_FORM]") && i === messages.length - 1 && (
+              <LeadForm summary={summary} onSubmit={handleLeadSubmit} onSkip={() => setShowForm(false)} />
+            )}
+          </div>
+        ))}
+        {loading && messages.length > 0 && <TypingDots />}
+        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
-      <div style={{ borderTop: `1px solid ${C.creamDark}`, background: C.white, padding: "16px 24px", position: "relative", zIndex: 2, flexShrink: 0 }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", gap: 12, alignItems: "flex-end" }}>
+      <div style={{ background: C.white, borderTop: `1px solid ${C.steel}`, padding: "16px 24px", flexShrink: 0, boxShadow: "0 -2px 12px rgba(10,22,40,0.06)" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
           <textarea
             ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Tell Ruby about yourself — where you're coming from, what you do, how you like to live..."
+            placeholder="Tell Ruby about yourself — where you're from, what you do, how you like to live..."
             rows={1}
-            style={{ flex: 1, background: C.cream, border: `1.5px solid ${C.creamDark}`, color: C.textDark, padding: "13px 16px", fontSize: 15, fontFamily: serif, resize: "none", outline: "none", lineHeight: 1.5, maxHeight: 120, overflowY: "auto", borderRadius: 4 }}
+            style={{ flex: 1, background: C.offWhite, border: `1.5px solid ${C.steel}`, color: C.textDark, padding: "12px 16px", fontSize: 15, fontFamily: body, resize: "none", outline: "none", lineHeight: 1.5, maxHeight: 120, overflowY: "auto", borderRadius: 10, transition: "border-color 0.2s" }}
+            onFocus={e => { e.target.style.borderColor = C.navy; }}
+            onBlur={e => { e.target.style.borderColor = C.steel; }}
             onInput={e => { e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px"; }}
           />
-          <button onClick={sendMessage} disabled={!input.trim() || loading} style={{ background: input.trim() && !loading ? C.terra : C.sand, color: input.trim() && !loading ? C.white : C.textLight, border: "none", padding: "13px 22px", fontSize: 20, cursor: input.trim() && !loading ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, borderRadius: 4 }}>↑</button>
+          <button onClick={send} disabled={!input.trim() || loading} style={{ background: input.trim() && !loading ? C.navy : C.steel, color: input.trim() && !loading ? C.white : C.textLight, border: "none", padding: "12px 20px", fontSize: 18, cursor: input.trim() && !loading ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, borderRadius: 10 }}>↑</button>
         </div>
-        <div style={{ maxWidth: 640, margin: "8px auto 0", fontFamily: sans, fontSize: 11, color: C.textLight, letterSpacing: "0.04em" }}>
-          Press Enter to send · Shift+Enter for new line
+        <div style={{ maxWidth: 720, margin: "8px auto 0", fontFamily: body, fontSize: 11, color: C.textLight }}>
+          Enter to send · Shift+Enter for new line
         </div>
       </div>
     </div>
