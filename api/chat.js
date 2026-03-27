@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  // CORS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -8,16 +9,42 @@ export default async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.VITE_ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify(req.body),
-  });
+  // Only allow POST
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  const data = await response.json();
-  return res.status(200).json(data);
+  // Guard against empty body
+  if (!req.body || !req.body.messages) {
+    return res.status(400).json({ error: 'Missing messages in request body' });
+  }
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY, // fixed: removed VITE_ prefix
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify(req.body),
+    });
+
+    const data = await response.json();
+
+    // Catch Anthropic-level errors and surface them clearly
+    if (!response.ok || data.error) {
+      console.error('Anthropic API error:', data);
+      return res.status(response.status || 500).json({
+        error: data.error?.message || 'Anthropic API error',
+        type: data.error?.type || 'unknown'
+      });
+    }
+
+    return res.status(200).json(data);
+
+  } catch (err) {
+    console.error('Handler error:', err);
+    return res.status(500).json({ error: 'Internal server error', detail: err.message });
+  }
 }
