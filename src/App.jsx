@@ -64,18 +64,58 @@ For families with junior golfers: Lochmere (Cary) and Lonnie Poole (Raleigh) are
 CONVERSATION FLOW:
 1. Greet them warmly as Ruby and ask what brings them to the Triangle
 2. Naturally gather: budget (rent or buy), who's moving, where they'll work, lifestyle priorities
-3. After 3-4 exchanges, introduce your SINGLE TOP neighborhood pick first — one vivid description with rent AND purchase price ranges, commute context, 3 things to love, 1 honest tradeoff. Lead with the single best fit based on everything they told you.
-4. After presenting the top pick, say something like "I have two more that could also work well for you — want to hear them?" and only continue with the other two if they respond positively or ask
+3. After 3-4 exchanges, deliver ALL THREE neighborhood recommendations at once using the EXACT JSON block format below — no partial reveals, no "want to see more?"
+4. After the JSON block, add a short warm follow-up message asking what resonates or if they have questions
 5. Write neighborhood names as plain text — never use asterisks or markdown bold like **Wake Forest**
-6. After recommendations have real back and forth — ask follow-up questions, dig into their priorities before offering specialist connection
+6. After recommendations, ask follow-up questions, dig into their priorities before offering specialist connection
 7. Only after genuine engagement (at least 2 exchanges after recommendations) offer to connect them with local specialists and end with [SHOW_LEAD_FORM]
 8. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations
-9. CRITICAL: Your top neighborhood recommendation must be driven entirely by what the user told you — budget, commute, schools, family situation, lifestyle priorities. Do not default to Raleigh neighborhoods unless the user's stated priorities point specifically there. If they mention schools, golf, or safety, Cary and Apex should rank high. If they mention urban life, walkability, or nightlife, lean Raleigh or Durham.
+9. CRITICAL: Your neighborhood recommendations must be driven entirely by what the user told you — budget, commute, schools, family situation, lifestyle priorities. Do not default to Raleigh neighborhoods unless the user's stated priorities point specifically there. If they mention schools, golf, or safety, Cary and Apex should rank high. If they mention urban life, walkability, or nightlife, lean Raleigh or Durham.
 10. IMPORTANT: When a user gives a short answer to your question (like "6 months" or "yes" or a number), recognize it as a direct answer to what you just asked and respond accordingly. Do not treat short answers as incomplete or ambiguous — they are answering your question.
+
+NEIGHBORHOOD CARD FORMAT — USE THIS EXACTLY when delivering recommendations:
+When you are ready to share neighborhoods, output a JSON block wrapped in triple backticks with the language tag "neighborhoods" like this:
+
+\`\`\`neighborhoods
+[
+  {
+    "rank": 1,
+    "name": "Cary",
+    "tagline": "Safe, polished, and built for families",
+    "rentRange": "$1,800–$2,800/mo",
+    "buyRange": "$420K–$650K",
+    "commute": "15 min to RTP via I-40",
+    "loves": ["Top-ranked Wake County schools", "Lochmere Golf Club for junior golfers", "Wegmans and everything you need"],
+    "tradeoff": "It's pristine but not edgy — you won't find much grit or nightlife here"
+  },
+  {
+    "rank": 2,
+    "name": "Apex",
+    "tagline": "Cary's charming neighbor with a real downtown",
+    "rentRange": "$1,600–$2,400/mo",
+    "buyRange": "$380K–$550K",
+    "commute": "20 min to RTP via US-64",
+    "loves": ["Historic downtown with local restaurants", "Slightly more affordable than Cary", "Excellent schools"],
+    "tradeoff": "Growing fast — traffic on US-64 is getting real"
+  },
+  {
+    "rank": 3,
+    "name": "Wake Forest",
+    "tagline": "Northeast gem popular with relocating families",
+    "rentRange": "$1,500–$2,200/mo",
+    "buyRange": "$340K–$500K",
+    "commute": "25 min to Raleigh via US-1",
+    "loves": ["Newer construction with space", "Strong schools and family community", "Real small-town downtown"],
+    "tradeoff": "Furthest from RTP — the commute adds up if you're heading west"
+  }
+]
+\`\`\`
+
+After the JSON block, always follow with a brief warm message like: "Those are my top three for you — what's jumping out? Any of those feel like home?"
 
 RUBY'S RULES:
 - Warm, direct, genuinely helpful — like a trusted friend who grew up here
-- Never use asterisks or markdown — plain conversational text only
+- Never use asterisks or markdown — plain conversational text only (except inside the neighborhoods JSON block)
 - Always be specific to the Triangle — never generic
 - Give honest opinions including honest tradeoffs
 - Reference real landmarks, employers, roads (I-40, 540, 64, US-1)
@@ -110,6 +150,23 @@ const MARKETS = [
   "Garner", "Knightdale", "Clayton", "Morrisville", "Wendell", "Zebulon"
 ];
 
+// ── Parse neighborhood cards out of Ruby's response ──
+function parseNeighborhoodCards(text) {
+  const match = text.match(/```neighborhoods\s*([\s\S]*?)```/);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1].trim());
+  } catch (e) {
+    console.error("Failed to parse neighborhood cards:", e);
+    return null;
+  }
+}
+
+// ── Strip the JSON block from the text so it doesn't appear in the chat bubble ──
+function stripNeighborhoodBlock(text) {
+  return text.replace(/```neighborhoods[\s\S]*?```/g, "").trim();
+}
+
 function RubyBadge({ size = 40 }) {
   const [err, setErr] = useState(false);
   return (
@@ -140,26 +197,153 @@ function TypingDots() {
   );
 }
 
+// ── Neighborhood Card component ──
+function NeighborhoodCard({ card, isTop }) {
+  return (
+    <div style={{
+      background: C.white,
+      border: `1.5px solid ${isTop ? C.gold : C.steel}`,
+      borderRadius: 16,
+      padding: "20px 22px",
+      boxShadow: isTop
+        ? "0 8px 32px rgba(201,168,76,0.15), 0 2px 8px rgba(10,22,40,0.06)"
+        : "0 2px 12px rgba(10,22,40,0.06)",
+      position: "relative",
+      overflow: "hidden",
+      transition: "transform 0.2s, box-shadow 0.2s",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = isTop ? "0 12px 40px rgba(201,168,76,0.2), 0 4px 12px rgba(10,22,40,0.08)" : "0 8px 24px rgba(10,22,40,0.1)"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = isTop ? "0 8px 32px rgba(201,168,76,0.15), 0 2px 8px rgba(10,22,40,0.06)" : "0 2px 12px rgba(10,22,40,0.06)"; }}
+    >
+      {/* Top pick ribbon */}
+      {isTop && (
+        <div style={{
+          position: "absolute", top: 0, right: 0,
+          background: C.gold, color: C.navy,
+          fontFamily: body, fontSize: 9, fontWeight: 800,
+          letterSpacing: "0.12em", textTransform: "uppercase",
+          padding: "4px 14px",
+          borderBottomLeftRadius: 10,
+        }}>
+          Top Pick
+        </div>
+      )}
+
+      {/* Rank + Name */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 10 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
+          background: isTop ? C.gold : C.steel,
+          color: isTop ? C.navy : C.textMid,
+          fontFamily: display, fontSize: 14, fontWeight: 700,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          {card.rank}
+        </div>
+        <div>
+          <div style={{ fontFamily: display, fontSize: 20, fontWeight: 600, color: C.navy, lineHeight: 1.1 }}>{card.name}</div>
+          <div style={{ fontFamily: body, fontSize: 12, color: C.textLight, marginTop: 2 }}>{card.tagline}</div>
+        </div>
+      </div>
+
+      {/* Price ranges */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+        <div style={{ background: C.offWhite, borderRadius: 8, padding: "8px 12px" }}>
+          <div style={{ fontFamily: body, fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textLight, marginBottom: 3 }}>Rent</div>
+          <div style={{ fontFamily: body, fontSize: 13, fontWeight: 600, color: C.navy }}>{card.rentRange}</div>
+        </div>
+        <div style={{ background: C.offWhite, borderRadius: 8, padding: "8px 12px" }}>
+          <div style={{ fontFamily: body, fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: C.textLight, marginBottom: 3 }}>Buy</div>
+          <div style={{ fontFamily: body, fontSize: 13, fontWeight: 600, color: C.navy }}>{card.buyRange}</div>
+        </div>
+      </div>
+
+      {/* Commute */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
+        <span style={{ fontSize: 13 }}>🚗</span>
+        <span style={{ fontFamily: body, fontSize: 12, color: C.textMid }}>{card.commute}</span>
+      </div>
+
+      {/* Love list */}
+      <div style={{ marginBottom: 12 }}>
+        {card.loves.map((item, i) => (
+          <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", marginBottom: 5 }}>
+            <span style={{ color: C.gold, fontSize: 12, marginTop: 1, flexShrink: 0 }}>✦</span>
+            <span style={{ fontFamily: body, fontSize: 13, color: C.textDark, lineHeight: 1.4 }}>{item}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Tradeoff */}
+      <div style={{
+        background: "rgba(10,22,40,0.03)",
+        border: `1px solid ${C.steel}`,
+        borderRadius: 8,
+        padding: "8px 12px",
+        display: "flex", gap: 8, alignItems: "flex-start",
+      }}>
+        <span style={{ fontSize: 12, flexShrink: 0, marginTop: 1 }}>⚠️</span>
+        <span style={{ fontFamily: body, fontSize: 12, color: C.textMid, lineHeight: 1.45, fontStyle: "italic" }}>{card.tradeoff}</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Three cards rendered side by side (or stacked on mobile) ──
+function NeighborhoodCardRow({ cards }) {
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: 14,
+        width: "100%",
+      }}
+        className="cards-grid"
+      >
+        <style>{`
+          @media (max-width: 860px) {
+            .cards-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+        {cards.map(card => (
+          <NeighborhoodCard key={card.rank} card={card} isTop={card.rank === 1} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ChatMessage({ msg }) {
   const isUser = msg.role === "user";
-  const content = msg.content.replace("[SHOW_LEAD_FORM]", "").trim();
+  const cards = !isUser ? parseNeighborhoodCards(msg.content) : null;
+  const displayText = cards ? stripNeighborhoodBlock(msg.content) : msg.content.replace("[SHOW_LEAD_FORM]", "").trim();
+
   return (
-    <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", marginBottom: 16, alignItems: "flex-end", gap: 10 }}>
-      {!isUser && <RubyBadge size={34} />}
-      <div style={{
-        maxWidth: "72%",
-        background: isUser ? C.navy : C.white,
-        color: isUser ? C.white : C.textDark,
-        padding: "12px 18px",
-        borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-        fontSize: 15, lineHeight: 1.65, fontFamily: body,
-        border: isUser ? "none" : `1px solid ${C.steel}`,
-        boxShadow: isUser ? "0 2px 12px rgba(10,22,40,0.2)" : "0 2px 8px rgba(10,22,40,0.06)",
-        whiteSpace: "pre-wrap",
-        letterSpacing: "-0.01em",
-      }}>
-        {content}
-      </div>
+    <div style={{ marginBottom: 16 }}>
+      {/* If there are cards, render them full-width first */}
+      {cards && <NeighborhoodCardRow cards={cards} />}
+
+      {/* Then render the text bubble (follow-up message after cards, or normal message) */}
+      {displayText && (
+        <div style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start", alignItems: "flex-end", gap: 10 }}>
+          {!isUser && <RubyBadge size={34} />}
+          <div style={{
+            maxWidth: "72%",
+            background: isUser ? C.navy : C.white,
+            color: isUser ? C.white : C.textDark,
+            padding: "12px 18px",
+            borderRadius: isUser ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+            fontSize: 15, lineHeight: 1.65, fontFamily: body,
+            border: isUser ? "none" : `1px solid ${C.steel}`,
+            boxShadow: isUser ? "0 2px 12px rgba(10,22,40,0.2)" : "0 2px 8px rgba(10,22,40,0.06)",
+            whiteSpace: "pre-wrap",
+            letterSpacing: "-0.01em",
+          }}>
+            {displayText}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -285,9 +469,6 @@ function LeadForm({ summary, onSubmit, onSkip }) {
   );
 }
 
-// FIX BUG 2 + 3: Walk messages in reverse — most recent recommendation wins.
-// Old code grabbed the first neighborhood ever mentioned, causing Raleigh to
-// always appear even when the conversation pointed clearly to Cary or elsewhere.
 function extractSummary(messages) {
   const full = messages.map(m => m.content).join(" ").toLowerCase();
   const highlights = [];
@@ -305,41 +486,27 @@ function extractSummary(messages) {
     if (full.includes(e)) highlights.push(`Works near ${e.toUpperCase()}`);
   });
 
+  // Pull top match from card data if present, else fall back to text scan
   const assistantMessages = messages.filter(m => m.role === "assistant");
-
-  // Ordered by specificity — more specific neighborhoods before generic city names
-  const hoods = [
-    "apex", "cary", "wake forest", "holly springs", "fuquay-varina",
-    "cameron village", "boylan heights", "five points", "north hills",
-    "downtown raleigh", "downtown durham", "ninth street", "duke park",
-    "chapel hill", "carrboro", "southern village",
-    "morrisville", "garner", "knightdale", "clayton", "wendell", "zebulon",
-    "woodcroft", "hope valley", "forest hills", "brier creek"
-  ];
-
-  // Pass 1: look in messages with explicit recommendation language, newest first
   for (let i = assistantMessages.length - 1; i >= 0; i--) {
-    const text = assistantMessages[i].content.toLowerCase();
-    if (
-      text.includes("top pick") ||
-      text.includes("best fit") ||
-      text.includes("recommend") ||
-      text.includes("perfect for you") ||
-      text.includes("would be") ||
-      text.includes("for your family")
-    ) {
-      for (const n of hoods) {
-        if (text.includes(n)) {
-          topMatch = n.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
-          break;
-        }
-      }
-      if (topMatch) break;
+    const cards = parseNeighborhoodCards(assistantMessages[i].content);
+    if (cards && cards.length > 0) {
+      const top = cards.find(c => c.rank === 1) || cards[0];
+      topMatch = top.name;
+      break;
     }
   }
 
-  // Pass 2 fallback: any assistant message, newest first
+  // Fallback: text scan
   if (!topMatch) {
+    const hoods = [
+      "apex", "cary", "wake forest", "holly springs", "fuquay-varina",
+      "cameron village", "boylan heights", "five points", "north hills",
+      "downtown raleigh", "downtown durham", "ninth street", "duke park",
+      "chapel hill", "carrboro", "southern village",
+      "morrisville", "garner", "knightdale", "clayton", "wendell", "zebulon",
+      "woodcroft", "hope valley", "forest hills", "brier creek"
+    ];
     for (let i = assistantMessages.length - 1; i >= 0; i--) {
       const text = assistantMessages[i].content.toLowerCase();
       for (const n of hoods) {
@@ -376,14 +543,13 @@ export default function Perch() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
+          max_tokens: 1500,
           system: SYSTEM_PROMPT,
           messages: [{ role: "user", content: "Hi, I'm looking to move to the Triangle area." }]
         })
       });
       const data = await res.json();
 
-      // FIX BUG 1: Guard against missing or error content on initial load
       if (!data.content || data.error) {
         console.error("API error on startChat:", data);
         setMessages([{ role: "assistant", content: "Hey! I'm Ruby, your Triangle neighborhood guide. Having a little trouble connecting — try refreshing!" }]);
@@ -399,7 +565,6 @@ export default function Perch() {
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
-  // FIX BUG 1: Full guards on every send — no more silent failures
   const send = async () => {
     if (!input.trim() || loading) return;
     const userMsg = { role: "user", content: input.trim() };
@@ -410,7 +575,7 @@ export default function Perch() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
+          max_tokens: 1500,
           system: SYSTEM_PROMPT,
           messages: next.map(m => ({ role: m.role, content: m.content }))
         })
@@ -418,7 +583,6 @@ export default function Perch() {
 
       const data = await res.json();
 
-      // Guard: Anthropic returned an error object
       if (!data.content || data.error) {
         console.error("API error on send:", data);
         setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I had a little hiccup there. Can you say that again?" }]);
@@ -428,7 +592,6 @@ export default function Perch() {
 
       const text = data.content.map(i => i.text || "").join("");
 
-      // Guard: empty response
       if (!text.trim()) {
         setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I didn't catch that. Can you try again?" }]);
         setLoading(false);
@@ -547,7 +710,6 @@ export default function Perch() {
               <div style={{ position: "absolute", inset: -16, background: `linear-gradient(135deg, ${C.goldPale} 0%, rgba(10,22,40,0.03) 100%)`, borderRadius: 28, zIndex: 0 }} />
               <div style={{ position: "relative", zIndex: 1, background: C.white, borderRadius: 24, padding: 28, boxShadow: "0 24px 64px rgba(10,22,40,0.12), 0 4px 16px rgba(10,22,40,0.06)" }}>
 
-                {/* Ruby full body image */}
                 <div style={{ width: "100%", borderRadius: 16, overflow: "hidden", marginBottom: 20, background: C.offWhite, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 320 }}>
                   <img
                     src={RUBY_HERO}
@@ -567,7 +729,6 @@ export default function Perch() {
                   </div>
                 </div>
 
-                {/* Sample bubble */}
                 <div style={{ background: C.offWhite, borderRadius: 12, padding: "12px 16px", border: `1px solid ${C.steel}` }}>
                   <p style={{ fontFamily: body, fontSize: 13, color: C.textMid, lineHeight: 1.55, margin: 0 }}>
                     "Hey! I'm Ruby. Tell me about yourself — where are you moving from and what brings you to the Triangle?"
@@ -601,7 +762,7 @@ export default function Perch() {
         <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}>
           {[
             ["01", "Tell Ruby about yourself", "Where you're coming from, what you do, how you like to live. No forms — just a real conversation."],
-            ["02", "Ruby finds your match", "She weighs your budget, lifestyle, commute, and priorities against every Triangle neighborhood — then gives you her honest top pick."],
+            ["02", "Ruby finds your match", "She weighs your budget, lifestyle, commute, and priorities against every Triangle neighborhood — then gives you her honest top picks."],
             ["03", "Connect with a specialist", "Ruby passes your full profile to a local specialist who knows exactly what you're looking for."],
           ].map(([num, title, desc]) => (
             <div className="step-card" key={num} style={{ padding: "32px 28px", border: `1px solid ${C.steel}`, borderRadius: 16, background: C.white, transition: "all 0.2s", cursor: "default" }}>
@@ -663,8 +824,8 @@ export default function Perch() {
         </button>
       </div>
 
-      {/* Messages */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "24px", maxWidth: 720, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
+      {/* Messages — wider container to accommodate 3-card grid */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "24px", maxWidth: 1000, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
         {loading && messages.length === 0 && <TypingDots />}
         {messages.map((msg, i) => (
           <div key={i}>
@@ -680,7 +841,7 @@ export default function Perch() {
 
       {/* Input */}
       <div style={{ background: C.white, borderTop: `1px solid ${C.steel}`, padding: "16px 24px", flexShrink: 0, boxShadow: "0 -2px 12px rgba(10,22,40,0.06)" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
           <textarea
             ref={inputRef}
             value={input}
@@ -695,7 +856,7 @@ export default function Perch() {
           />
           <button onClick={send} disabled={!input.trim() || loading} style={{ background: input.trim() && !loading ? C.navy : C.steel, color: input.trim() && !loading ? C.white : C.textLight, border: "none", padding: "12px 20px", fontSize: 18, cursor: input.trim() && !loading ? "pointer" : "not-allowed", transition: "all 0.2s", flexShrink: 0, borderRadius: 10 }}>↑</button>
         </div>
-        <div style={{ maxWidth: 720, margin: "8px auto 0", fontFamily: body, fontSize: 11, color: C.textLight }}>
+        <div style={{ maxWidth: 1000, margin: "8px auto 0", fontFamily: body, fontSize: 11, color: C.textLight }}>
           Enter to send · Shift+Enter for new line
         </div>
       </div>
