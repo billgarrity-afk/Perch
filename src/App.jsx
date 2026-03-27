@@ -33,10 +33,10 @@ CHAPEL HILL / CARRBORO:
 - Southern Village: Planned community, family-friendly, walkable village center.
 
 CARY / APEX / MORRISVILLE:
-- Cary: One of America's safest cities. Immaculate, excellent schools, Wegmans, easy RTP access.
+- Cary: One of America's safest cities. Immaculate, excellent schools (top-ranked in Wake County), Wegmans, easy RTP access. Lochmere Golf Club is here — one of the best junior golf programs in the Triangle.
 - Apex: Historic downtown with charm, slightly more affordable than Cary, fast-growing, great schools.
 - Morrisville: Inside RTP, extremely diverse, most convenient tech commute, lacks walkable downtown.
-- Holly Springs: Fast-growing southern suburb, newer construction, excellent schools, family-friendly.
+- Holly Springs: Fast-growing southern suburb, newer construction, excellent schools, family-friendly. Devil's Ridge Golf Club nearby.
 - Fuquay-Varina: Real small-town charm, more affordable than Holly Springs, growing fast. 30 min to Raleigh.
 
 NORTHERN SUBURBS:
@@ -49,14 +49,29 @@ EASTERN CORRIDOR:
 - Wendell: Small and authentic, very affordable. Wendell Falls is notable here. 25 min to downtown.
 - Zebulon: Most rural, very affordable, small-town feel, best for buyers wanting acreage. 30-40 min commute.
 
+GOLF COURSES IN THE TRIANGLE:
+- Lonnie Poole Golf Course: NC State's course, open to public, Raleigh near Centennial Campus. Excellent junior programs, challenging layout, great value. One of the best public courses in the Triangle.
+- Lochmere Golf Club: Cary. Excellent junior development, family-friendly, one of the best teaching programs in the area. Top pick for families with junior golfers.
+- Prestonwood Country Club: Cary, private, two championship courses, high-end membership, strong golf culture.
+- Treyburn Country Club: Durham, private, Tom Fazio design, exclusive, beautiful setting.
+- Devil's Ridge Golf Club: Holly Springs, semi-private, excellent course, strong value.
+- Hedingham Golf Club: East Raleigh, public, affordable, popular with locals and beginners.
+- Brier Creek Country Club: Northwest Raleigh, private, good for tech/SAS corridor families.
+- Tobacco Road Golf Club: Sanford (45 min south), Mike Strantz design, bucket-list course worth the drive for serious golfers.
+- Pinehurst Resort: 45-60 min south, world-class, No. 2 is a national treasure. Regular day trips for serious golfers.
+For families with junior golfers: Lochmere (Cary) and Lonnie Poole (Raleigh) are the two best starting points in the Triangle. Cary and the surrounding area has excellent junior golf infrastructure overall.
+
 CONVERSATION FLOW:
 1. Greet them warmly as Ruby and ask what brings them to the Triangle
 2. Naturally gather: budget (rent or buy), who's moving, where they'll work, lifestyle priorities
-3. After 3-4 exchanges recommend TOP 3 neighborhoods — vivid descriptions, rent AND purchase price ranges, commute context, 3 things to love, 1 honest tradeoff
-4. Write neighborhood names as plain text — never use asterisks or markdown bold like **Wake Forest**
-5. After recommendations ask follow-up questions — have real back and forth before offering specialist connection
-6. Only after genuine engagement say you can connect them with local specialists and end with [SHOW_LEAD_FORM]
-7. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations
+3. After 3-4 exchanges, introduce your SINGLE TOP neighborhood pick first — one vivid description with rent AND purchase price ranges, commute context, 3 things to love, 1 honest tradeoff. Lead with the single best fit based on everything they told you.
+4. After presenting the top pick, say something like "I have two more that could also work well for you — want to hear them?" and only continue with the other two if they respond positively or ask
+5. Write neighborhood names as plain text — never use asterisks or markdown bold like **Wake Forest**
+6. After recommendations have real back and forth — ask follow-up questions, dig into their priorities before offering specialist connection
+7. Only after genuine engagement (at least 2 exchanges after recommendations) offer to connect them with local specialists and end with [SHOW_LEAD_FORM]
+8. NEVER show [SHOW_LEAD_FORM] on the first message after recommendations
+9. CRITICAL: Your top neighborhood recommendation must be driven entirely by what the user told you — budget, commute, schools, family situation, lifestyle priorities. Do not default to Raleigh neighborhoods unless the user's stated priorities point specifically there. If they mention schools, golf, or safety, Cary and Apex should rank high. If they mention urban life, walkability, or nightlife, lean Raleigh or Durham.
+10. IMPORTANT: When a user gives a short answer to your question (like "6 months" or "yes" or a number), recognize it as a direct answer to what you just asked and respond accordingly. Do not treat short answers as incomplete or ambiguous — they are answering your question.
 
 RUBY'S RULES:
 - Warm, direct, genuinely helpful — like a trusted friend who grew up here
@@ -66,6 +81,7 @@ RUBY'S RULES:
 - Reference real landmarks, employers, roads (I-40, 540, 64, US-1)
 - Tight budget → mention Garner, Knightdale, Fuquay-Varina
 - Kids/schools → Wake Forest, Cary, Apex, Holly Springs
+- Golf families → Cary (Lochmere), Raleigh (Lonnie Poole), Holly Springs (Devil's Ridge)
 - Remote work → Clayton, Wendell, Zebulon`;
 
 const C = {
@@ -187,7 +203,7 @@ function LeadForm({ summary, onSubmit, onSkip }) {
     outline: "none", boxSizing: "border-box", borderRadius: 8, transition: "border-color 0.2s",
   });
   const lbl = { fontFamily: body, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: C.textLight, marginBottom: 5, display: "block" };
-  const err = { fontFamily: body, fontSize: 11, color: C.ruby, marginTop: 4 };
+  const errStyle = { fontFamily: body, fontSize: 11, color: C.ruby, marginTop: 4 };
 
   return (
     <div onClick={e => e.stopPropagation()} style={{ background: C.white, border: `1px solid ${C.steel}`, borderRadius: 12, padding: 24, marginBottom: 16, maxWidth: "92%", boxShadow: "0 8px 32px rgba(10,22,40,0.1)" }}>
@@ -217,7 +233,7 @@ function LeadForm({ summary, onSubmit, onSkip }) {
         <div>
           <label style={lbl}>Full Name *</label>
           <input style={inp(errors.name)} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Sarah Mitchell" />
-          {errors.name && <div style={err}>{errors.name}</div>}
+          {errors.name && <div style={errStyle}>{errors.name}</div>}
         </div>
         <div>
           <label style={lbl}>Phone</label>
@@ -227,7 +243,7 @@ function LeadForm({ summary, onSubmit, onSkip }) {
       <div style={{ marginBottom: 10 }}>
         <label style={lbl}>Email Address *</label>
         <input style={inp(errors.email)} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@email.com" />
-        {errors.email && <div style={err}>{errors.email}</div>}
+        {errors.email && <div style={errStyle}>{errors.email}</div>}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
         <div>
@@ -241,7 +257,7 @@ function LeadForm({ summary, onSubmit, onSkip }) {
             <option value="6months">3–6 months</option>
             <option value="exploring">Just exploring</option>
           </select>
-          {errors.timeline && <div style={err}>{errors.timeline}</div>}
+          {errors.timeline && <div style={errStyle}>{errors.timeline}</div>}
         </div>
         <div>
           <label style={lbl}>Renting or Buying? *</label>
@@ -251,7 +267,7 @@ function LeadForm({ summary, onSubmit, onSkip }) {
             <option value="buy">Buying</option>
             <option value="either">Open to either</option>
           </select>
-          {errors.type && <div style={err}>{errors.type}</div>}
+          {errors.type && <div style={errStyle}>{errors.type}</div>}
         </div>
       </div>
       <div style={{ fontFamily: body, fontSize: 11, color: C.textLight, marginBottom: 14 }}>
@@ -269,6 +285,9 @@ function LeadForm({ summary, onSubmit, onSkip }) {
   );
 }
 
+// FIX BUG 2 + 3: Walk messages in reverse — most recent recommendation wins.
+// Old code grabbed the first neighborhood ever mentioned, causing Raleigh to
+// always appear even when the conversation pointed clearly to Cary or elsewhere.
 function extractSummary(messages) {
   const full = messages.map(m => m.content).join(" ").toLowerCase();
   const highlights = [];
@@ -286,14 +305,53 @@ function extractSummary(messages) {
     if (full.includes(e)) highlights.push(`Works near ${e.toUpperCase()}`);
   });
 
-  const assistantText = messages.filter(m => m.role === "assistant").map(m => m.content).join(" ");
-  const hoods = ["apex", "cary", "wake forest", "downtown raleigh", "north hills", "downtown durham", "chapel hill", "carrboro", "morrisville", "holly springs", "fuquay-varina", "garner", "knightdale", "clayton", "wendell", "zebulon"];
-  for (const n of hoods) {
-    if (assistantText.toLowerCase().includes(n)) {
-      topMatch = n.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
-      break;
+  const assistantMessages = messages.filter(m => m.role === "assistant");
+
+  // Ordered by specificity — more specific neighborhoods before generic city names
+  const hoods = [
+    "apex", "cary", "wake forest", "holly springs", "fuquay-varina",
+    "cameron village", "boylan heights", "five points", "north hills",
+    "downtown raleigh", "downtown durham", "ninth street", "duke park",
+    "chapel hill", "carrboro", "southern village",
+    "morrisville", "garner", "knightdale", "clayton", "wendell", "zebulon",
+    "woodcroft", "hope valley", "forest hills", "brier creek"
+  ];
+
+  // Pass 1: look in messages with explicit recommendation language, newest first
+  for (let i = assistantMessages.length - 1; i >= 0; i--) {
+    const text = assistantMessages[i].content.toLowerCase();
+    if (
+      text.includes("top pick") ||
+      text.includes("best fit") ||
+      text.includes("recommend") ||
+      text.includes("perfect for you") ||
+      text.includes("would be") ||
+      text.includes("for your family")
+    ) {
+      for (const n of hoods) {
+        if (text.includes(n)) {
+          topMatch = n.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+          break;
+        }
+      }
+      if (topMatch) break;
     }
   }
+
+  // Pass 2 fallback: any assistant message, newest first
+  if (!topMatch) {
+    for (let i = assistantMessages.length - 1; i >= 0; i--) {
+      const text = assistantMessages[i].content.toLowerCase();
+      for (const n of hoods) {
+        if (text.includes(n)) {
+          topMatch = n.split(" ").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+          break;
+        }
+      }
+      if (topMatch) break;
+    }
+  }
+
   if (topMatch) highlights.push(`Top match: ${topMatch}`);
   return { highlights, topMatch };
 }
@@ -316,17 +374,32 @@ export default function Perch() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: SYSTEM_PROMPT, messages: [{ role: "user", content: "Hi, I'm looking to move to the Triangle area." }] })
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: "user", content: "Hi, I'm looking to move to the Triangle area." }]
+        })
       });
       const data = await res.json();
-      setMessages([{ role: "assistant", content: data.content.map(i => i.text || "").join("") }]);
-    } catch {
+
+      // FIX BUG 1: Guard against missing or error content on initial load
+      if (!data.content || data.error) {
+        console.error("API error on startChat:", data);
+        setMessages([{ role: "assistant", content: "Hey! I'm Ruby, your Triangle neighborhood guide. Having a little trouble connecting — try refreshing!" }]);
+      } else {
+        const text = data.content.map(i => i.text || "").join("");
+        setMessages([{ role: "assistant", content: text || "Hey! I'm Ruby, your Triangle neighborhood guide. Tell me what brings you to the area!" }]);
+      }
+    } catch (err) {
+      console.error("startChat error:", err);
       setMessages([{ role: "assistant", content: "Hey! I'm Ruby, your Triangle neighborhood guide. Having a little trouble connecting — try refreshing!" }]);
     }
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
+  // FIX BUG 1: Full guards on every send — no more silent failures
   const send = async () => {
     if (!input.trim() || loading) return;
     const userMsg = { role: "user", content: input.trim() };
@@ -335,13 +408,37 @@ export default function Perch() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: SYSTEM_PROMPT, messages: next.map(m => ({ role: m.role, content: m.content })) })
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: next.map(m => ({ role: m.role, content: m.content }))
+        })
       });
+
       const data = await res.json();
+
+      // Guard: Anthropic returned an error object
+      if (!data.content || data.error) {
+        console.error("API error on send:", data);
+        setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I had a little hiccup there. Can you say that again?" }]);
+        setLoading(false);
+        return;
+      }
+
       const text = data.content.map(i => i.text || "").join("");
+
+      // Guard: empty response
+      if (!text.trim()) {
+        setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I didn't catch that. Can you try again?" }]);
+        setLoading(false);
+        return;
+      }
+
       if (text.includes("[SHOW_LEAD_FORM]") && !showForm && !formDone) setShowForm(true);
       setMessages(prev => [...prev, { role: "assistant", content: text }]);
-    } catch {
+    } catch (err) {
+      console.error("Send error:", err);
       setMessages(prev => [...prev, { role: "assistant", content: "Sorry, something went wrong. Try again!" }]);
     }
     setLoading(false);
@@ -352,7 +449,10 @@ export default function Perch() {
 
   const handleLeadSubmit = (data) => {
     setFormDone(true); setShowForm(false);
-    setMessages(prev => [...prev, { role: "assistant", content: `You're all set! I've passed everything to a specialist who knows ${data.topMatch || "the Triangle"} really well. They'll be in touch within 24 hours.\n\nStill here if you have more questions!` }]);
+    setMessages(prev => [...prev, {
+      role: "assistant",
+      content: `You're all set! I've passed everything to a specialist who knows ${data.topMatch || "the Triangle"} really well. They'll be in touch within 24 hours.\n\nStill here if you have more questions!`
+    }]);
   };
 
   const summary = extractSummary(messages);
@@ -501,7 +601,7 @@ export default function Perch() {
         <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}>
           {[
             ["01", "Tell Ruby about yourself", "Where you're coming from, what you do, how you like to live. No forms — just a real conversation."],
-            ["02", "Ruby finds your match", "She weighs your budget, lifestyle, commute, and priorities against every Triangle neighborhood — then gives you her honest top 3."],
+            ["02", "Ruby finds your match", "She weighs your budget, lifestyle, commute, and priorities against every Triangle neighborhood — then gives you her honest top pick."],
             ["03", "Connect with a specialist", "Ruby passes your full profile to a local specialist who knows exactly what you're looking for."],
           ].map(([num, title, desc]) => (
             <div className="step-card" key={num} style={{ padding: "32px 28px", border: `1px solid ${C.steel}`, borderRadius: 16, background: C.white, transition: "all 0.2s", cursor: "default" }}>
