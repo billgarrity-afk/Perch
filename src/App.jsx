@@ -60,226 +60,7 @@ GOLF COURSES IN THE TRIANGLE:
 - Tobacco Road Golf Club: Sanford (45 min south), Mike Strantz design, bucket-list course worth the drive for serious golfers.
 - Pinehurst Resort: 45-60 min south, world-class, No. 2 is a national treasure. Regular day trips for serious golfers.
 For families with junior golfers: Lochmere (Cary) and Lonnie Poole (Raleigh) are the two best starting points in the Triangle. Cary and the surrounding area has excellent junior golf infrastructure overall.
-# COMMUNITY SENTIMENT INTELLIGENCE
-# Source-separated observations to be woven naturally into neighborhood conversations.
-# Ruby references these as real signals — not as "I read online" but as lived local knowledge.
-# Refresh cadence: Review annually or when a major local event shifts community mood.
 
----
-
-## CARY
-
-### REDDIT PULSE
-Source: r/raleigh, r/triangle, r/cary
-Recurring themes observed across hundreds of threads:
-
-- Schools are the #1 reason people choose Cary. Green Hope, Panther Creek, and Apex Friendship high schools come up constantly as top-tier public options. Families moving from competitive school markets (DC, NJ, NY) are routinely surprised by the quality.
-- The "Containment Area for Relocated Yankees" joke is a known local meme — Cary residents have fully reclaimed it. It signals something real: this is a community of transplants who chose it intentionally, not people who ended up here by default.
-- Traffic on NC-55 and Cary Parkway during peak hours is a consistent complaint, especially near Crossroads Plaza. Locals recommend learning the back roads fast.
-- Wegmans at Crossroads is treated like a community institution. Multiple threads reference it as a genuine quality-of-life upgrade. Not a joke.
-- The greenway system — over 70 miles — gets consistent praise from outdoor families. Running, cycling, strollers. Underrated feature.
-- Newer residents note that Cary has almost no nightlife by design. The trade is safety, schools, and walkable retail. People who want a bar scene eventually migrate toward Raleigh or Durham for evenings out.
-
-### TIKTOK SIGNAL
-Source: "moving to Cary NC," "living in Cary NC," Triangle relocation content
-Observed tone and themes from creator and newcomer content:
-
-- The most common reaction from newcomers: shock at how much they get for their money compared to Northern Virginia, New Jersey, and coastal California. Videos showing $500K homes with yards consistently go viral in relocation communities.
-- Creators who moved for RTP tech jobs (Cisco, Lenovo, SAS) frequently cite Cary as the default landing spot — "everyone from work lives here."
-- Junior golf content is emerging. Creators with golf families specifically name Lochmere Golf Club as a surprise standout. The junior development program gets called out by name in several videos.
-- The food scene surprises newcomers positively. Cary's diversity drives a genuinely strong international food corridor — Korean, Indian, Chinese, Middle Eastern — along Morrisville Parkway and Kildaire Farm Road.
-- A common honest take from creators: "Cary is not exciting, but it is excellent." That framing resonates with families who are done with exciting and want functional.
-
-### NEXTDOOR TEMPERATURE
-Source: Cary neighborhood groups — hyperlocal resident sentiment
-Observed recurring topics from active community discussions:
-
-- Elementary school boundaries are a frequent discussion. Parents are highly engaged with school assignment zones and research them before buying. Addresses matter — some streets fall in better-rated districts than neighbors one block over.
-- Safety perception is extremely high. Lost dog posts and package delivery updates dominate more than crime reports. Residents note this explicitly when comparing to places they moved from.
-- The greenway trails generate consistent positive discussion — new segments, trail conditions, family events. Strong community identity built around outdoor activity.
-- HOA culture is real and active. Residents either love the consistency it creates or find it stifling. Worth surfacing as a genuine lifestyle consideration for buyers.
-- New construction quality complaints appear periodically in the Preston, Amberly, and MacGregor Downs corridors. Some residents flag builder-grade finishing on newer homes in fast-growth subdivisions.
-- The Cary Town Center redevelopment is a recurring topic — longtime residents are cautiously optimistic, newer residents are excited. Signals the town is investing in its core.
-
----
-
-## APEX
-
-### REDDIT PULSE
-Source: r/raleigh, r/triangle, r/apex
-Recurring themes observed across hundreds of threads:
-
-- Apex is consistently described as "what Cary was 10 years ago" — high quality, slightly more affordable, and growing fast. Locals say this with pride, not concern.
-- The historic downtown on Salem Street draws strong affection. Small restaurants, local shops, seasonal events. Threads regularly recommend it to newcomers as a genuine surprise — people don't expect a real downtown.
-- US-64 traffic toward Raleigh is the dominant complaint. The interchange at I-540 backs up badly during morning commute. Locals have mapped out back road alternatives and share them freely in threads.
-- Peak Road Park and the American Tobacco Trail connection get consistent outdoor praise. Families with dogs and bikes reference these constantly.
-- The school system mirrors Cary's reputation — Apex High and Apex Friendship both get strong marks. Threads note that the school quality is a primary driver of appreciation values holding steady.
-- Some longtime residents flag that the "small town feel" is eroding with rapid growth. New subdivisions are changing the character of the western edges.
-
-### TIKTOK SIGNAL
-Source: "moving to Apex NC," "Apex NC neighborhood tour," Triangle relocation content
-Observed tone and themes from creator and newcomer content:
-
-- Apex is gaining its own relocation content identity separate from Cary. Creators are starting to position it as "Cary's cooler, slightly more affordable sibling."
-- The downtown Salem Street area photographs well and shows up frequently in lifestyle content. Coffee shops, local restaurants, and the walkable core make it visually distinct from generic suburb content.
-- Value comparison videos resonate strongly — creators show what $400K buys in Apex versus comparable coastal markets. The square footage gap is dramatic.
-- Newcomer content frequently mentions the sense of community feel. Block parties, neighborhood Facebook groups, kids playing outside. Things people moved away from in larger metros.
-- Devil's Ridge Golf Club in nearby Holly Springs gets mentioned by golf-oriented creators in the same breath as Apex — positioned as the southern suburbs' best accessible course.
-
-### NEXTDOOR TEMPERATURE
-Source: Apex neighborhood groups — hyperlocal resident sentiment
-Observed recurring topics from active community discussions:
-
-- Growth anxiety is the defining tension in Apex Nextdoor discussions. Longtime residents express concern about traffic, density, and the pace of new development. Constructive but real friction.
-- The downtown events — Apex PeakFest, food truck rodeos, holiday markets — generate enormous community engagement. Strong local pride in the event calendar.
-- School crowding is an emerging topic. As the population grows, some elementary schools are feeling the squeeze. Parents track capacity numbers closely.
-- The American Tobacco Trail generates consistent positive discussion and trail maintenance requests. It's a community asset people actively advocate for.
-- Neighbor-to-neighbor feel is frequently cited as a reason people stay. Multiple threads from residents who considered leaving for cost reasons but decided the community was worth it.
-- New construction HOA disputes appear but are less dominant than in Cary. The older established neighborhoods have fewer HOA conflicts.
-
----
-
-## WAKE FOREST
-
-### REDDIT PULSE
-Source: r/raleigh, r/triangle, r/wakeforest
-Recurring themes observed across hundreds of threads:
-
-- Wake Forest is the go-to recommendation for families relocating from the Northeast and Midwest who want a genuine community feel at a price point that doesn't require a second income just to afford housing.
-- US-1 southbound into Raleigh during morning rush is the consistent pain point. Threads are explicit: plan your commute around it or you will resent it. The 98 bypass and Falls of Neuse Road alternatives are shared frequently.
-- The real downtown — White Street — generates genuine affection. Breweries, local restaurants, music. Residents regularly note that it punches above its weight for a suburb of its size.
-- Excellent schools are a primary draw. Heritage High School specifically comes up often. Families from competitive education markets express relief at the public school quality.
-- Wake Forest is described as a community of people who moved there intentionally. Strong neighborhood associations, active Facebook groups, high civic engagement.
-- Some threads flag that growth is accelerating and the character of the town is changing at the edges. The core downtown and established neighborhoods remain the anchor.
-
-### TIKTOK SIGNAL
-Source: "moving to Wake Forest NC," "Wake Forest NC tour," Triangle relocation content
-Observed tone and themes from creator and newcomer content:
-
-- Wake Forest is the sleeper hit in Triangle relocation content. Creators who moved there expecting a generic suburb express genuine surprise at the downtown character.
-- White Street Brewing and the local food scene along White Street get consistent visual coverage. The brewery culture specifically resonates with the younger family demographic.
-- Home value content performs well — Wake Forest offers noticeably more square footage and lot size than Cary or Apex at comparable price points. The trade-off (longer commute) is acknowledged honestly.
-- Creators who are remote workers highlight Wake Forest as ideal — the commute concern disappears and you get the most space for the money in the Triangle.
-- The community feel content — neighborhood events, local sports, front porch culture — resonates strongly with viewers who are fleeing dense metros.
-
-### NEXTDOOR TEMPERATURE
-Source: Wake Forest neighborhood groups — hyperlocal resident sentiment
-Observed recurring topics from active community discussions:
-
-- The US-1 commute is discussed constantly. Residents share traffic reports, accident updates, and alternate route tips in real time. It's a lived daily experience, not just an abstract concern.
-- Downtown White Street events generate strong engagement — the community actively shows up and talks about it. High civic participation is a structural feature of the town.
-- School boundary discussions mirror Cary and Apex — parents track zones carefully before purchasing. Heritage versus other feeder schools is a recurring research topic.
-- Wildlife and nature come up frequently in a positive way. Deer, turkeys, and wooded lots are part of the appeal. Residents celebrate this rather than complaining about it.
-- Growth concerns are present but less anxious than Apex. Residents seem to trust the town's management of development more — Wake Forest has a reputation for thoughtful planning.
-- New residents integrating quickly is a consistent theme. Multiple threads from newcomers saying neighbors introduced themselves within days of moving in.
-
----
-
-## HOLLY SPRINGS
-
-### REDDIT PULSE
-Source: r/raleigh, r/triangle, r/hollysprings
-Recurring themes observed across hundreds of threads:
-
-- Holly Springs is the fastest-growing town in the Triangle and locals feel it. Threads split between longtime residents mourning the old character and newer arrivals thrilled with what they found.
-- Novant Health and the broader healthcare corridor along NC-55 generates significant local employment discussion. Medical and biotech families cite Holly Springs specifically as their landing zone.
-- The schools are uniformly praised. Holly Springs High School consistently appears in threads about the best public schools in Wake County. It's a primary purchase driver.
-- Bass Lake Park and the Holly Springs Cultural Center are community anchors. Outdoor families reference Bass Lake constantly — walking trails, fishing, open space.
-- Grocery and retail access is improving but threads note it still lags behind Cary. The Wegmans gap is real — residents make Cary runs for specialty shopping.
-- Devil's Ridge Golf Club is a point of local pride. Golf-oriented threads specifically recommend it as the best semi-private value in the southern suburbs.
-
-### TIKTOK SIGNAL
-Source: "moving to Holly Springs NC," "Holly Springs NC neighborhood," Triangle relocation content
-Observed tone and themes from creator and newcomer content:
-
-- Holly Springs is gaining momentum in relocation content as a family destination. The "great schools, newer construction, outdoor lifestyle" narrative is consistent across creators.
-- New construction home tours perform well — Holly Springs has significant inventory of 2018-2024 builds with modern finishes. It photographs better than older suburban stock.
-- The Ting Park minor league baseball angle shows up in lifestyle content. Families with kids frame it as an unexpected community entertainment asset.
-- Devil's Ridge Golf Club appears in golf family content alongside Lochmere. Creators position Holly Springs as the southern suburbs' best option for serious golfers.
-- The price per square foot narrative resonates — Holly Springs offers newer construction at a slight discount to Cary, which drives strong engagement in value-focused relocation content.
-
-### NEXTDOOR TEMPERATURE
-Source: Holly Springs neighborhood groups — hyperlocal resident sentiment
-Observed recurring topics from active community discussions:
-
-- Traffic on NC-55 and the Holly Springs Road corridor is the dominant pain point. Growth has outpaced road infrastructure. Residents share alternate routes and commute timing strategies regularly.
-- The school community is highly engaged. Holly Springs High School parents are active and vocal — both in praise and in holding administration accountable. Strong PTA energy.
-- Bass Lake Park maintenance and programming generates consistent positive discussion. The park is treated as a community living room.
-- New construction quality is a recurring concern in some of the faster-built subdivisions. Residents in newer developments flag warranty issues and builder responsiveness as variable.
-- The town's rapid growth creates some identity tension — "this isn't the small town we moved to" appears periodically. Newer arrivals don't feel this; it's a longtime resident sentiment.
-- Neighborhood social fabric is strong. Block parties, neighborhood apps, community Facebook groups are active. The community builds itself quickly even in new subdivisions.
-
----
-
-## DOWNTOWN DURHAM
-
-### REDDIT PULSE
-Source: r/bullcity, r/triangle, r/durham
-Recurring themes observed across hundreds of threads:
-
-- Downtown Durham has undergone a legitimate transformation and locals will tell you so directly. The American Tobacco Campus, DPAC, and the restaurant scene are cited as evidence that the revitalization is real, not promotional.
-- The food scene is treated with genuine civic pride. James Beard-recognized restaurants — Mateo, Mothers & Sons, Dashi — come up in threads as proof points that Durham is a serious food city, not a college town with good pizza.
-- The creative and arts community is a structural feature, not a marketing claim. DPAC programming, local music venues, and the gallery scene generate constant thread activity from engaged residents.
-- Safety perception is more nuanced here than in Cary or Apex. Threads are honest: downtown Durham has improved dramatically but specific blocks and specific hours require awareness. Locals share this knowledge openly and without drama.
-- The Duke University halo effect generates significant economic stability and employment discussion. Duke Health, Duke University, and the research ecosystem are treated as anchors that insulate Durham from economic volatility.
-- Rent and purchase prices are rising faster than people expected five years ago. Threads from longtime residents and artists express real concern about affordability and displacement.
-
-### TIKTOK SIGNAL
-Source: "moving to Durham NC," "downtown Durham NC," "Bull City" relocation content
-Observed tone and themes from creator and newcomer content:
-
-- Downtown Durham has a distinct visual identity in content — the American Tobacco Campus, the Bulls games, the murals, the warehouse-to-restaurant conversions. It photographs as authentically cool rather than manufactured.
-- Creators specifically contrast Durham with Raleigh. Durham is positioned as grittier, more creative, less polished. This framing attracts a specific audience that is tired of suburban sameness.
-- The food content from Durham performs well. Restaurant-focused creators treat it as a serious culinary destination.
-- Remote work content from Durham skews toward creative professionals — designers, writers, tech people who want urban texture without coastal pricing.
-- The gentrification conversation appears in Durham content more honestly than in other Triangle markets. Creators who live there acknowledge the tension between revitalization and displacement. It's treated as a real issue, not ignored.
-
-### NEXTDOOR TEMPERATURE
-Source: Downtown Durham and Bull City neighborhood groups — hyperlocal resident sentiment
-Observed recurring topics from active community discussions:
-
-- Neighborhood investment and improvement is an active ongoing conversation. Residents advocate for specific streets, lighting, and public space improvements with real civic energy.
-- The arts and events calendar generates enormous engagement. DPAC shows, Durham Bulls games, restaurant openings, local festivals. High community participation.
-- Safety discussions are present and handled maturely. Residents share specific observations, advocate for improvements, and support local initiatives — without the performative alarm that appears in other markets.
-- Parking and transit are real friction points. Downtown Durham is car-dependent in ways that frustrate residents who want to be less reliant on driving. GoTriangle bus discussions appear regularly.
-- The local food and small business community generates strong advocacy. When a beloved local restaurant closes or a new one opens, threads run long. Residents have genuine emotional investment in the local economy.
-- Long-term residents express mixed feelings about the pace of change. The revitalization is welcomed but the loss of affordability for original community members is acknowledged as a cost.
-
----
-
-## DOWNTOWN RALEIGH
-
-### REDDIT PULSE
-Source: r/raleigh, r/triangle
-Recurring themes observed across hundreds of threads:
-
-- Downtown Raleigh is in an active growth phase and locals debate whether the city is becoming what it wants to be or losing what made it interesting. Both perspectives appear with evidence.
-- Glenwood South is the dominant nightlife and restaurant corridor. Brewery Bhavana, Raleigh Beer Garden, and the independent restaurant scene along Glenwood are treated as genuine assets. Threads recommend specific spots with the specificity of people who go regularly.
-- The walkability question is complicated. Downtown Raleigh is walkable by Triangle standards but not by coastal city standards. Threads manage expectations honestly — you can walk to dinner and bars, but grocery runs still require a car for most residents.
-- Parking is a consistent frustration, especially for visitors. Residents who live downtown have made peace with it; people considering the move are warned directly.
-- The tech and startup community has genuine density downtown — HQ Raleigh, the innovation district, and the general professional ecosystem generate ongoing employment discussion. Young professionals in tech cite downtown Raleigh specifically.
-- Crime and safety threads are present but not dominant. Residents note that awareness is appropriate but the downtown experience is generally safe and improving.
-
-### TIKTOK SIGNAL
-Source: "moving to Raleigh NC," "downtown Raleigh," "Raleigh NC lifestyle" content
-Observed tone and themes from creator and newcomer content:
-
-- Downtown Raleigh is the primary face of Triangle relocation content nationally. When people search "moving to NC," Raleigh content dominates. It sets expectations for the entire market.
-- Brewery and bar content performs exceptionally well. The Raleigh Beer Garden, Brewery Bhavana, and the Glenwood South corridor generate consistent lifestyle content that attracts a specific demographic.
-- The value comparison narrative is strong — creators show what downtown apartment living costs in Raleigh versus comparable units in Austin, DC, or Atlanta. The gap is significant and drives engagement.
-- Food content is substantial. Downtown Raleigh's restaurant scene has matured enough to generate serious culinary content, not just "affordable eats" listicles.
-- The young professional narrative dominates downtown Raleigh content. Remote workers, tech employees, and career movers in their late 20s and 30s are the primary audience and creator demographic.
-
-### NEXTDOOR TEMPERATURE
-Source: Downtown Raleigh neighborhood groups, Glenwood South, Five Points adjacent communities
-Observed recurring topics from active community discussions:
-
-- Noise complaints from the Glenwood South entertainment district are a recurring tension. Residents who moved downtown for the energy sometimes discover the reality of weekend nights adjacent to bar corridors.
-- The development pipeline generates constant discussion. New towers, converted warehouses, hotel projects — residents track them closely and have strong opinions on what the neighborhood is becoming.
-- Parking enforcement and street parking policy are frequent friction points. Downtown residents navigate this constantly.
-- The homeless services concentration near Moore Square generates complex community discussion. Residents hold a range of views and the threads reflect genuine civic engagement with a difficult issue.
-- Independent business advocacy is strong. When local restaurants or shops close, threads mobilize quickly. Community investment in the local economy is genuine.
-- Safety improvements and lighting in specific corridors get ongoing attention. Residents advocate actively for specific streets and intersections and track police response.
 CONVERSATION FLOW:
 1. Greet them warmly as Ruby and ask what brings them to the Triangle
 2. Naturally gather: budget (rent or buy), who's moving, where they'll work, lifestyle priorities
@@ -305,7 +86,10 @@ When you are ready to share neighborhoods, output a JSON block wrapped in triple
     "buyRange": "$420K–$650K",
     "commute": "15 min to RTP via I-40",
     "loves": ["Top-ranked Wake County schools", "Lochmere Golf Club for junior golfers", "Wegmans and everything you need"],
-    "tradeoff": "It's pristine but not edgy — you won't find much grit or nightlife here"
+    "tradeoff": "It's pristine but not edgy — you won't find much grit or nightlife here",
+    "redditPulse": "Best public schools in Wake County — families from DC and NJ are consistently surprised",
+    "tiktokSignal": "Not exciting, but excellent — creators who moved here keep saying it",
+    "nextdoorTemp": "Greenway trails and safety are what residents talk about most"
   },
   {
     "rank": 2,
@@ -315,7 +99,10 @@ When you are ready to share neighborhoods, output a JSON block wrapped in triple
     "buyRange": "$380K–$550K",
     "commute": "20 min to RTP via US-64",
     "loves": ["Historic downtown with local restaurants", "Slightly more affordable than Cary", "Excellent schools"],
-    "tradeoff": "Growing fast — traffic on US-64 is getting real"
+    "tradeoff": "Growing fast — traffic on US-64 is getting real",
+    "redditPulse": "What Cary was 10 years ago — locals say this with pride, not concern",
+    "tiktokSignal": "Salem Street surprises every newcomer — nobody expects a real downtown",
+    "nextdoorTemp": "Strong community turnout for events; growth anxiety is the honest tension"
   },
   {
     "rank": 3,
@@ -325,10 +112,15 @@ When you are ready to share neighborhoods, output a JSON block wrapped in triple
     "buyRange": "$340K–$500K",
     "commute": "25 min to Raleigh via US-1",
     "loves": ["Newer construction with space", "Strong schools and family community", "Real small-town downtown"],
-    "tradeoff": "Furthest from RTP — the commute adds up if you're heading west"
+    "tradeoff": "Furthest from RTP — the commute adds up if you're heading west",
+    "redditPulse": "Go-to for Northeast and Midwest families who want community feel at a real price point",
+    "tiktokSignal": "Remote workers call it the Triangle's best-kept secret — most space for the money",
+    "nextdoorTemp": "Neighbors introduce themselves within days — high civic participation is structural here"
   }
 ]
 \`\`\`
+
+IMPORTANT: Always populate redditPulse, tiktokSignal, and nextdoorTemp for every neighborhood you recommend using one specific, honest observation from what you know about each place. Keep each under 12 words. These are real signals locals share — write them that way.
 
 After the JSON block, always follow with a brief warm message like: "Those are my top three for you — what's jumping out? Any of those feel like home?"
 
@@ -500,10 +292,65 @@ function NeighborhoodCard({ card, isTop }) {
         borderRadius: 8,
         padding: "8px 12px",
         display: "flex", gap: 8, alignItems: "flex-start",
+        marginBottom: (card.redditPulse || card.tiktokSignal || card.nextdoorTemp) ? 12 : 0,
       }}>
         <span style={{ fontSize: 12, flexShrink: 0, marginTop: 1 }}>⚠️</span>
         <span style={{ fontFamily: body, fontSize: 12, color: C.textMid, lineHeight: 1.45, fontStyle: "italic" }}>{card.tradeoff}</span>
       </div>
+
+      {/* Sentiment strip — subtle trust signals */}
+      {(card.redditPulse || card.tiktokSignal || card.nextdoorTemp) && (
+        <div style={{
+          borderTop: `1px solid ${C.steel}`,
+          paddingTop: 10,
+        }}>
+          <div style={{
+            fontFamily: body, fontSize: 9, fontWeight: 700,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+            color: C.textLight, marginBottom: 7,
+          }}>
+            Heard from locals
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+            {card.redditPulse && (
+              <div style={{ display: "flex", gap: 7, alignItems: "flex-start" }}>
+                <span style={{
+                  fontFamily: body, fontSize: 9, fontWeight: 700,
+                  color: "#FF4500", background: "rgba(255,69,0,0.08)",
+                  border: "1px solid rgba(255,69,0,0.2)",
+                  borderRadius: 4, padding: "2px 6px", flexShrink: 0,
+                  letterSpacing: "0.04em",
+                }}>Reddit</span>
+                <span style={{ fontFamily: body, fontSize: 11, color: C.textMid, lineHeight: 1.4, fontStyle: "italic" }}>"{card.redditPulse}"</span>
+              </div>
+            )}
+            {card.tiktokSignal && (
+              <div style={{ display: "flex", gap: 7, alignItems: "flex-start" }}>
+                <span style={{
+                  fontFamily: body, fontSize: 9, fontWeight: 700,
+                  color: "#010101", background: "rgba(1,1,1,0.06)",
+                  border: "1px solid rgba(1,1,1,0.15)",
+                  borderRadius: 4, padding: "2px 6px", flexShrink: 0,
+                  letterSpacing: "0.04em",
+                }}>TikTok</span>
+                <span style={{ fontFamily: body, fontSize: 11, color: C.textMid, lineHeight: 1.4, fontStyle: "italic" }}>"{card.tiktokSignal}"</span>
+              </div>
+            )}
+            {card.nextdoorTemp && (
+              <div style={{ display: "flex", gap: 7, alignItems: "flex-start" }}>
+                <span style={{
+                  fontFamily: body, fontSize: 9, fontWeight: 700,
+                  color: "#00B246", background: "rgba(0,178,70,0.08)",
+                  border: "1px solid rgba(0,178,70,0.2)",
+                  borderRadius: 4, padding: "2px 6px", flexShrink: 0,
+                  letterSpacing: "0.04em",
+                }}>Nextdoor</span>
+                <span style={{ fontFamily: body, fontSize: 11, color: C.textMid, lineHeight: 1.4, fontStyle: "italic" }}>"{card.nextdoorTemp}"</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
