@@ -535,7 +535,16 @@ function LeadForm({ summary, onSubmit, onSkip }) {
   );
 }
 
-function extractSummary(messages) {
+function detectNeighborhoodIntent(userMessage, cards) {
+  if (!cards || cards.length === 0) return null;
+  const lower = userMessage.toLowerCase();
+  for (const card of cards) {
+    if (lower.includes(card.name.toLowerCase())) {
+      return card.name;
+    }
+  }
+  return null;
+}
   const full = messages.map(m => m.content).join(" ").toLowerCase();
   const highlights = [];
   let topMatch = "";
@@ -553,13 +562,22 @@ function extractSummary(messages) {
   });
 
   // Pull top match from card data if present, else fall back to text scan
+  // Check user messages AFTER cards appeared — their intent overrides rank 1
   const assistantMessages = messages.filter(m => m.role === "assistant");
-  for (let i = assistantMessages.length - 1; i >= 0; i--) {
+  let shownCards = null;
+  for (let i = 0; i < assistantMessages.length; i++) {
     const cards = parseNeighborhoodCards(assistantMessages[i].content);
-    if (cards && cards.length > 0) {
-      const top = cards.find(c => c.rank === 1) || cards[0];
-      topMatch = top.name;
-      break;
+    if (cards && cards.length > 0) { shownCards = cards; break; }
+  }
+  if (shownCards) {
+    // Default to rank 1
+    topMatch = (shownCards.find(c => c.rank === 1) || shownCards[0]).name;
+    // Scan user messages after cards for explicit neighborhood mentions
+    const cardIndex = messages.findIndex(m => m.role === "assistant" && parseNeighborhoodCards(m.content));
+    const userMessagesAfterCards = messages.slice(cardIndex + 1).filter(m => m.role === "user");
+    for (const userMsg of userMessagesAfterCards) {
+      const mentioned = detectNeighborhoodIntent(userMsg.content, shownCards);
+      if (mentioned) { topMatch = mentioned; } // keep updating — last mention wins
     }
   }
 
